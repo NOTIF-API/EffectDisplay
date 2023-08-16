@@ -32,7 +32,7 @@ namespace EffectDisplay.Extension
         private string IEffectCategory(EffectType effectType)
         {
             EffectCategory category = effectType.GetCategories();
-            if (category == EffectCategory.Positive | category == EffectCategory.Movement)
+            if (category == EffectCategory.Positive | category == EffectCategory.Movement | category == EffectCategory.None)
             {
                 return _Config.GoodTypeWriting;
             }
@@ -58,6 +58,10 @@ namespace EffectDisplay.Extension
                 ShowningText.AppendLine("\n\n\n");
                 foreach (StatusEffectBase effect in  _Player.ActiveEffects)
                 {
+                    if (_Player.SessionVariables.ContainsKey("EDoff"))
+                    {
+                        continue;
+                    }
                     if (effect.IsEnabled)
                     {
                         string EffectLine = _Config.EffectMessage;

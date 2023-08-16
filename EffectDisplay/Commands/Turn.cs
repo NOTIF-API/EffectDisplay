@@ -30,11 +30,16 @@ namespace EffectDisplay.Commands
                     player.SessionVariables.Add("EDoff", null);
                     return true;
                 }
-                else
+                if (arguments.At(0) == "on")
                 {
                     response = "done";
                     player.SessionVariables.Remove("EDoff");
                     return true;
+                }
+                else
+                {
+                    response = "your argument not off or on!";
+                    return false;
                 }
             }
         }

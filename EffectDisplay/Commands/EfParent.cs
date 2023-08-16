@@ -15,7 +15,7 @@ namespace EffectDisplay.Commands
 
         public override void LoadGeneratedCommands()
         {
-            throw new NotImplementedException();
+            RegisterCommand(new Turn());
         }
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
