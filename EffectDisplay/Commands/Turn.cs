@@ -1,4 +1,5 @@
 ﻿using CommandSystem;
+using EffectDisplay.Extension;
 using Exiled.API.Features;
 using System;
 
@@ -26,14 +27,14 @@ namespace EffectDisplay.Commands
             {
                 if (arguments.At(0) == "off")
                 {
-                    response = "done";
-                    player.SessionVariables.Add("EDoff", null);
+                    response = "now you don't see active effects in front of the screen";
+                    player.GameObject.GetComponent<EffectReader>().StatUpdate(true);
                     return true;
                 }
                 if (arguments.At(0) == "on")
                 {
-                    response = "done";
-                    player.SessionVariables.Remove("EDoff");
+                    response = "now you see active effects in front of the screen";
+                    player.GameObject.GetComponent<EffectReader>().StatUpdate(false);
                     return true;
                 }
                 else
