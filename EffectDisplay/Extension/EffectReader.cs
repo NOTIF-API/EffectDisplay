@@ -15,6 +15,45 @@ namespace EffectDisplay.Extension
         private CoroutineHandle _CoroutineHandle;
         private Player _Player;
         private StringBuilder sb;
+        private List<EffectType> Good { get; set; } = new List<EffectType>()
+        { 
+            EffectType.Invigorated,
+            EffectType.Invisible,
+            EffectType.RainbowTaste,
+            EffectType.BodyshotReduction,
+            EffectType.DamageReduction,
+            EffectType.MovementBoost,
+            EffectType.Vitality,
+            EffectType.Scp1853,
+            EffectType.SpawnProtected
+        };
+        private List<EffectType> Bad { get; set; } = new List<EffectType>()
+        {
+            EffectType.AmnesiaVision,
+            EffectType.AmnesiaItems,
+            EffectType.Asphyxiated,
+            EffectType.Bleeding,
+            EffectType.Blinded,
+            EffectType.Burned,
+            EffectType.Concussed,
+            EffectType.Corroding,
+            EffectType.PocketCorroding,
+            EffectType.Deafened,
+            EffectType.Decontaminating,
+            EffectType.Disabled,
+            EffectType.Ensnared,
+            EffectType.Exhausted,
+            EffectType.Flashed,
+            EffectType.Hemorrhage,
+            EffectType.Hypothermia,
+            EffectType.Poisoned,
+            EffectType.SinkHole,
+            EffectType.Stained,
+            EffectType.SeveredHands,
+            EffectType.Traumatized,
+            EffectType.CardiacArrest,
+            EffectType.Scanned
+        };
         private Config _Config;
         /// <summary>
         /// determines whether the player wants to not see the message about active effects
@@ -50,18 +89,17 @@ namespace EffectDisplay.Extension
         }
         private string IEffectCategory(EffectType effectType)
         {
-            EffectCategory category = effectType.GetCategories();
-            if (category == EffectCategory.Positive | category == EffectCategory.Movement | category == EffectCategory.None)
+            if (Good.Contains(effectType))
             {
                 return _Config.GoodTypeWriting;
             }
-            if (effectType == EffectType.Scp207)
+            if (Bad.Contains(effectType))
             {
-                return _Config.MixedTypeWriting;
+                return _Config.BadTypeWriting;
             }
             else
             {
-                return _Config.BadTypeWriting;
+                return _Config.MixedTypeWriting;
             }
         }
         
