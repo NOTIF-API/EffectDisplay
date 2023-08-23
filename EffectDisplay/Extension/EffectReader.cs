@@ -111,7 +111,7 @@ namespace EffectDisplay.Extension
                 {
                     break;
                 }
-                if (!IsDisabled)
+                if (!IsDisabled & !_Player.IsDead)
                 {
                     StringBuilder ShowningText = new StringBuilder();
                     ShowningText.AppendLine("\n\n\n");
@@ -140,8 +140,8 @@ namespace EffectDisplay.Extension
                         }
                     }
                     _Player.ShowHint($"{ShowningText.ToString()}", 1);
-                    yield return Timing.WaitForSeconds(0.9f);
                 }
+                yield return Timing.WaitForSeconds(0.9f);
             }
             Destroy(this);
         }
