@@ -7,7 +7,15 @@ namespace EffectDisplay.EventHandler
     {
         public void OnVerefied(VerifiedEventArgs e)
         {
-            e.Player.GameObject.AddComponent<EffectReader>();
+            if (!Main.Instance.DataBaseManager.GetMemberChose(e.Player.UserId))
+            {
+                e.Player.GameObject.AddComponent<EffectReader>();
+            }
+            else
+            {
+                e.Player.GameObject.AddComponent<EffectReader>().StatUpdate(true);
+                return;
+            }
         }
     }
 }

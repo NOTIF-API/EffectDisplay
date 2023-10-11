@@ -22,7 +22,7 @@ namespace EffectDisplay.Commands
                 response = "";
                 return false;
             }
-            if (player.GameObject.GetComponent<EffectReader>() != null)
+            if (player.GameObject.GetComponent<EffectReader>() != null & !Main.Instance.DataBaseManager.GetMemberChose(player.UserId))
             {
                 response = "your component works successfully (if it doesn't see it, try the turn command, you may have turned it off)";
                 return false;

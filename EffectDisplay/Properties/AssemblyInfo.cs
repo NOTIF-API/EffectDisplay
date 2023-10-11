@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("EffectDisplay")]
 [assembly: AssemblyDescription("Show active player effect")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("NOTIF#1506")]
+[assembly: AssemblyCompany("notifapi")]
 [assembly: AssemblyProduct("EffectDisplay")]
 [assembly: AssemblyCopyright("Copyright © NOTIF 2023")]
 [assembly: AssemblyTrademark("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номера сборки и редакции по умолчанию 
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.1.0")]
-[assembly: AssemblyFileVersion("1.2.1.0")]
+[assembly: AssemblyVersion("1.2.3.0")]
+[assembly: AssemblyFileVersion("1.2.3.0")]

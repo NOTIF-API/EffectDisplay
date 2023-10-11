@@ -1,4 +1,6 @@
-﻿using Exiled.API.Interfaces;
+﻿using Exiled.API.Enums;
+using Exiled.API.Interfaces;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace EffectDisplay
@@ -17,5 +19,15 @@ namespace EffectDisplay
         public string GoodTypeWriting { get; set; } = "<color=green>Positive</color>";
         [Description("If you think about it, it's clear that these lines are inserted into {type}")]
         public string MixedTypeWriting { get; set; } = "<color=#FB00FF>Mixed</color>";
+        [Description("list of effects that will not be displayed (automatic here are the effects that are issued by the game as technical https://en.scpslgame.com/index.php?title=Status_Effects)")]
+        public List<EffectType> BlackListEffect { get; set; } = new List<EffectType>()
+        {
+            EffectType.SoundtrackMute,
+            EffectType.InsufficientLighting
+        };
+        [Description("defines the path to the database (do not change unless necessary")]
+        public string PathToDatabase { get; set; } = "{ExiledConfigPath}/EffectDisplay/Player.db";
+        [Description("use database for save user chose")]
+        public bool DbUsing { get; set; } = true;
     }
 }

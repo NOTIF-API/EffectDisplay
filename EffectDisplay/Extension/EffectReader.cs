@@ -7,6 +7,7 @@ using MEC;
 using CustomPlayerEffects;
 using Exiled.API.Extensions;
 using System;
+using System.Linq;
 
 namespace EffectDisplay.Extension
 {
@@ -15,7 +16,7 @@ namespace EffectDisplay.Extension
         private CoroutineHandle _CoroutineHandle;
         private Player _Player;
         private StringBuilder sb;
-        private List<EffectType> Good { get; set; } = new List<EffectType>()
+        private List<EffectType> Positive { get; set; } = new List<EffectType>()
         { 
             EffectType.Invigorated,
             EffectType.Invisible,
@@ -27,7 +28,7 @@ namespace EffectDisplay.Extension
             EffectType.Scp1853,
             EffectType.SpawnProtected
         };
-        private List<EffectType> Bad { get; set; } = new List<EffectType>()
+        private List<EffectType> Negative { get; set; } = new List<EffectType>()
         {
             EffectType.AmnesiaVision,
             EffectType.AmnesiaItems,
@@ -62,7 +63,7 @@ namespace EffectDisplay.Extension
         /// <summary>
         /// updates the value of IsDisabled
         /// </summary>
-        /// <param name="value">passed value</param>
+        /// <param name="value">passed value <para>false enable effect reader</para><para>true disable effect reader</para></param>
         public void StatUpdate(bool value)
         {
             if (IsDisabled == value)
@@ -89,11 +90,11 @@ namespace EffectDisplay.Extension
         }
         private string IEffectCategory(EffectType effectType)
         {
-            if (Good.Contains(effectType))
+            if (Positive.Contains(effectType))
             {
                 return _Config.GoodTypeWriting;
             }
-            if (Bad.Contains(effectType))
+            if (Negative.Contains(effectType))
             {
                 return _Config.BadTypeWriting;
             }
@@ -115,9 +116,9 @@ namespace EffectDisplay.Extension
                 {
                     StringBuilder ShowningText = new StringBuilder();
                     ShowningText.AppendLine("\n\n\n");
-                    foreach (StatusEffectBase effect in _Player.ActiveEffects)
+                    foreach (StatusEffectBase effect in _Player.ActiveEffects.Where(x => x.IsEnabled))
                     {
-                        if (effect.IsEnabled)
+                        if (!_Config.BlackListEffect.Contains(effect.GetEffectType()))
                         {
                             string EffectLine = _Config.EffectMessage;
                             EffectLine = EffectLine.Replace("{type}", IEffectCategory(effect.GetEffectType()));

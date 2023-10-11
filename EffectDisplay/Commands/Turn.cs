@@ -1,6 +1,8 @@
 ﻿using CommandSystem;
 using EffectDisplay.Extension;
 using Exiled.API.Features;
+using EffectDisplay.Features;
+using EffectDisplay.Features.Serelization;
 using System;
 
 namespace EffectDisplay.Commands
@@ -25,21 +27,31 @@ namespace EffectDisplay.Commands
             }
             else
             {
-                if (arguments.At(0) == "off")
+                try
                 {
-                    response = "now you don't see active effects in front of the screen";
-                    player.GameObject.GetComponent<EffectReader>().StatUpdate(true);
-                    return true;
+                    if (arguments.At(0) == "off")
+                    {
+                        response = "now you don't see active effects in front of the screen";
+                        Main.Instance.DataBaseManager.SaveState(true, player.UserId);
+                        player.GameObject.GetComponent<EffectReader>().StatUpdate(true);
+                        return true;
+                    }
+                    if (arguments.At(0) == "on")
+                    {
+                        response = "now you see active effects in front of the screen";
+                        Main.Instance.DataBaseManager.SaveState(false, player.UserId);
+                        player.GameObject.GetComponent<EffectReader>().StatUpdate(false);
+                        return true;
+                    }
+                    else
+                    {
+                        response = "your argument not off or on!";
+                        return false;
+                    }
                 }
-                if (arguments.At(0) == "on")
+                catch (Exception ex)
                 {
-                    response = "now you see active effects in front of the screen";
-                    player.GameObject.GetComponent<EffectReader>().StatUpdate(false);
-                    return true;
-                }
-                else
-                {
-                    response = "your argument not off or on!";
+                    response = $"error: {ex.Message}";
                     return false;
                 }
             }
