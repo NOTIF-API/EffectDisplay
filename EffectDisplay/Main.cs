@@ -3,6 +3,7 @@ using EffectDisplay.EventHandler;
 using player = Exiled.Events.Handlers.Player;
 using System.IO;
 using EffectDisplay.Features;
+using MEC;
 
 namespace EffectDisplay
 {
@@ -15,7 +16,6 @@ namespace EffectDisplay
         public override void OnEnabled()
         {
             Instance = this;
-            DataBaseManager = new DataBaseManager();
 
             if (!Directory.Exists(Paths.Configs + "/EffectDisplay"))
             {
@@ -27,7 +27,11 @@ namespace EffectDisplay
                 Log.Warn("file not found it will be created");
                 File.Create(this.Config.PathToDatabase.Replace("{ExiledConfigPath}", Paths.Configs));
             }
-
+            // if there are no files, then he has time to wait for them to appear
+            Timing.CallDelayed(0.5f, () =>
+            {
+                DataBaseManager = new DataBaseManager();
+            });
             RoundEvent = new RoundEvent();
             player.Verified += RoundEvent.OnVerefied;
             base.OnEnabled();
