@@ -104,6 +104,7 @@
   <ItemGroup>
     <Compile Include="Commands\Check.cs" />
     <Compile Include="Commands\EfParent.cs" />
+    <Compile Include="Commands\Total.cs" />
     <Compile Include="Commands\Turn.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EventHandler\RoundEvent.cs" />

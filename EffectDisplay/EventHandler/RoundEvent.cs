@@ -13,7 +13,7 @@ namespace EffectDisplay.EventHandler
             }
             else
             {
-                e.Player.GameObject.AddComponent<EffectReader>().StatUpdate(true);
+                e.Player.GameObject.AddComponent<EffectReader>().IsEnabled = false;
                 return;
             }
         }

@@ -29,18 +29,34 @@ namespace EffectDisplay.Commands
             {
                 try
                 {
+                    if (arguments.Count == 0)
+                    {
+                        bool enable = !player.GameObject.GetComponent<EffectReader>().IsEnabled;
+                        string type = "";
+                        if (enable)
+                        {
+                            type = "enabled";
+                        }
+                        else
+                        {
+                            type = "disabled";
+                        }
+                        player.GameObject.GetComponent<EffectReader>().IsEnabled = enable;
+                        response = $"we have {type} your effect";
+                        return true;
+                    }
                     if (arguments.At(0) == "off")
                     {
                         response = "now you don't see active effects in front of the screen";
                         Main.Instance.DataBaseManager.SaveState(true, player.UserId);
-                        player.GameObject.GetComponent<EffectReader>().StatUpdate(true);
+                        player.GameObject.GetComponent<EffectReader>().IsEnabled = false;
                         return true;
                     }
                     if (arguments.At(0) == "on")
                     {
                         response = "now you see active effects in front of the screen";
                         Main.Instance.DataBaseManager.SaveState(false, player.UserId);
-                        player.GameObject.GetComponent<EffectReader>().StatUpdate(false);
+                        player.GameObject.GetComponent<EffectReader>().IsEnabled = true;
                         return true;
                     }
                     else

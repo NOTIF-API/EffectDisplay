@@ -11,6 +11,8 @@ namespace EffectDisplay
         public bool IsEnabled { get; set; } = true;
         [Description("Whether the message from the plugin will be visible (Helps if you find a bug)")]
         public bool Debug { get; set; } = false;
+        [Description("time during which the text is displayed (0.9 seconds is suitable if the average ping is 80 ms)")]
+        public float TextUpdateTime { get; set; } = (float)0.9;
         [Description("What form will the message about what effect the player has enabled")]
         public string EffectMessage { get; set; } = @"<align=left><size=13>Effect: {effect} is {type} will end {duration} with {intensivity} intensivity</size></align>";
         [Description("If you think about it, it's clear that these lines are inserted into {type}")]

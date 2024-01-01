@@ -17,11 +17,12 @@ namespace EffectDisplay.Commands
         {
             RegisterCommand(new Turn());
             RegisterCommand(new Check());
+            RegisterCommand(new Total());
         }
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            response = "EffectDisplay turn | check";
+            response = "EffectDisplay turn | check | total";
             return true;
         }
     }

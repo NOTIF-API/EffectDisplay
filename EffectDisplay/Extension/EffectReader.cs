@@ -13,9 +13,12 @@ namespace EffectDisplay.Extension
 {
     public class EffectReader: MonoBehaviour
     {
+        public static int TotalEffectReaderComponents { get; private set; } = 0;
         private CoroutineHandle _CoroutineHandle;
         private Player _Player;
+        private string _Name;
         private StringBuilder sb;
+        private const float EndlessEffectTime = 0.1f;
         private List<EffectType> Positive { get; set; } = new List<EffectType>()
         { 
             EffectType.Invigorated,
@@ -59,26 +62,12 @@ namespace EffectDisplay.Extension
         /// <summary>
         /// determines whether the player wants to not see the message about active effects
         /// </summary>
-        public bool IsDisabled { get; private set; } = false;
-        /// <summary>
-        /// updates the value of IsDisabled
-        /// </summary>
-        /// <param name="value">passed value <para>false enable effect reader</para><para>true disable effect reader</para></param>
-        public void StatUpdate(bool value)
-        {
-            if (IsDisabled == value)
-            {
-                return;
-            }
-            else
-            {
-                IsDisabled = value;
-            }
-        }
+        public bool IsEnabled { get; set; } = true;
 
         private void Awake()
         {
             _Player = Player.Get(transform.gameObject);
+            _Name = _Player.Nickname;
             if (_Player == null )
             {
                 Log.Debug("GameObject not contain player classification");
@@ -87,6 +76,7 @@ namespace EffectDisplay.Extension
             Log.Debug($"Added component to {_Player.Nickname}");
             _CoroutineHandle = Timing.RunCoroutine(EffectListener(), $"Efl-{_Player.Id}");
             _Config = Main.Instance.Config;
+            TotalEffectReaderComponents += 1;
         }
         private string IEffectCategory(EffectType effectType)
         {
@@ -103,26 +93,35 @@ namespace EffectDisplay.Extension
                 return _Config.MixedTypeWriting;
             }
         }
-        
+        private void OnDestroy()
+        {
+            Timing.KillCoroutines(this._CoroutineHandle);
+            Log.Debug($"Dissconecting and destroying component. {_Name}");
+            TotalEffectReaderComponents -= 1;
+        }
         private IEnumerator<float> EffectListener()
         {
             for (; ; )
             {
-                if (_Player == null)
+                if (this._Player == null)
                 {
                     break;
                 }
-                if (!IsDisabled & !_Player.IsDead)
+                if (this.IsEnabled & !this._Player.IsDead)
                 {
                     StringBuilder ShowningText = new StringBuilder();
                     ShowningText.AppendLine("\n\n\n");
-                    foreach (StatusEffectBase effect in _Player.ActiveEffects.Where(x => x.IsEnabled))
+                    foreach (StatusEffectBase effect in this._Player.ActiveEffects.Where(x => x.IsEnabled))
                     {
-                        if (!_Config.BlackListEffect.Contains(effect.GetEffectType()))
+                        if (_Config.BlackListEffect.Contains(effect.GetEffectType()))
                         {
-                            string EffectLine = _Config.EffectMessage;
+                            continue;
+                        }
+                        else
+                        {
+                            string EffectLine = this._Config.EffectMessage;
                             EffectLine = EffectLine.Replace("{type}", IEffectCategory(effect.GetEffectType()));
-                            if (effect.Duration >= 0.2f)
+                            if (effect.Duration >= EndlessEffectTime)
                             {
                                 EffectLine = EffectLine.Replace("{duration}", Convert.ToInt32(effect.TimeLeft).ToString());
                             }
@@ -135,14 +134,10 @@ namespace EffectDisplay.Extension
                             ShowningText.AppendLine(EffectLine);
 
                         }
-                        else
-                        {
-                            continue;
-                        }
                     }
                     _Player.ShowHint($"{ShowningText.ToString()}", 1);
                 }
-                yield return Timing.WaitForSeconds(0.9f);
+                yield return Timing.WaitForSeconds(this._Config.TextUpdateTime);
             }
             Destroy(this);
         }
