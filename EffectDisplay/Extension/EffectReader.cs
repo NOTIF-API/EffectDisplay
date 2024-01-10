@@ -92,7 +92,8 @@ namespace EffectDisplay.Extension
                             {
                                 EffectLine = EffectLine.Replace("{duration}", "inf");
                             }
-                            EffectLine = EffectLine.Replace("{effect}", effect.GetEffectType().ToString());
+                            Main.Instance.Config.EffectNameDisplay.TryGetValue(effect.GetEffectType(), out string name);
+                            EffectLine = EffectLine.Replace("{effect}", name);
                             EffectLine = EffectLine.Replace("{intensivity}", effect.Intensity.ToString());
                             ShowningText.AppendLine(EffectLine);
 

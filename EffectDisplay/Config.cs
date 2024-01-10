@@ -1,5 +1,7 @@
-﻿using Exiled.API.Enums;
+﻿using CustomPlayerEffects;
+using Exiled.API.Enums;
 using Exiled.API.Interfaces;
+using InventorySystem.Items.Usables.Scp244.Hypothermia;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -27,6 +29,54 @@ namespace EffectDisplay
             EffectType.SoundtrackMute,
             EffectType.InsufficientLighting,
             EffectType.BecomingFlamingo
+        };
+        [Description("how any effect will be displayed on the screen")]
+        public Dictionary<EffectType, string> EffectNameDisplay { get; set; } = new Dictionary<EffectType, string>()
+        {
+            [EffectType.AmnesiaItems] = "AmnesiaItems",
+            [EffectType.AmnesiaVision] = "AmnesiaVision",
+            [EffectType.Asphyxiated] = "Asphyxiated",
+            [EffectType.Bleeding] = "Bleeding",
+            [EffectType.Blinded] = "Blinded",
+            [EffectType.Burned] = "Burned",
+            [EffectType.Concussed] = "Concussed",
+            [EffectType.Corroding] = "Corroding",
+            [EffectType.Deafened] = "Deafened",
+            [EffectType.Decontaminating] = "Decontaminating",
+            [EffectType.Disabled] = "Disabled",
+            [EffectType.Ensnared] = "Ensnared",
+            [EffectType.Exhausted] = "Exhausted",
+            [EffectType.Flashed] = "Flashed",
+            [EffectType.Hemorrhage] = "Hemorrhage",
+            [EffectType.Invigorated] = "Invigorated",
+            [EffectType.BodyshotReduction] = "BodyshotReduction",
+            [EffectType.Poisoned] = "Poisoned",
+            [EffectType.Scp207] = "Scp207",
+            [EffectType.Invisible] = "Invisible",
+            [EffectType.SinkHole] = "SinkHole",
+            [EffectType.DamageReduction] = "DamageReduction",
+            [EffectType.MovementBoost] = "MovementBoost",
+            [EffectType.RainbowTaste] = "RainbowTaste",
+            [EffectType.SeveredHands] = "SeveredHands",
+            [EffectType.Stained] = "Stained",
+            [EffectType.Vitality] = "Vitality",
+            [EffectType.Hypothermia] = "Hypothermia",
+            [EffectType.Scp1853] = "Scp1853",
+            [EffectType.CardiacArrest] = "CardiacArrest",
+            [EffectType.InsufficientLighting] = "InsufficientLighting",
+            [EffectType.SoundtrackMute] = "SoundtrackMute",
+            [EffectType.SpawnProtected] = "SpawnProtected",
+            [EffectType.Traumatized] = "Traumatized",
+            [EffectType.AntiScp207] = "AntiScp207",
+            [EffectType.Scanned] = "Scanned",
+            [EffectType.PocketCorroding] = "PocketCorroding",
+            [EffectType.SilentWalk] = "SilentWalk",
+            [EffectType.Strangled] = "Strangled",
+            [EffectType.Ghostly] = "Ghostly",
+            [EffectType.BecomingFlamingo] = "BecomingFlamingo",
+            [EffectType.Scp559] = "Scp559",
+            [EffectType.Scp956Target] = "Scp956Target",
+            [EffectType.Snowed] = "Snowed"
         };
         [Description("defines the path to the database (do not change unless necessary")]
         public string PathToDatabase { get; set; } = "{ExiledConfigPath}/EffectDisplay/Player.db";
