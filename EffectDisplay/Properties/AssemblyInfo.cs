@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные со сборкой.
 [assembly: AssemblyTitle("EffectDisplay")]
-[assembly: AssemblyDescription("Show active player effect")]
+[assembly: AssemblyDescription("Show active player effect as hints")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("notifapi")]
 [assembly: AssemblyProduct("EffectDisplay")]
-[assembly: AssemblyCopyright("Copyright © NOTIF 2023")]
+[assembly: AssemblyCopyright("Copyright © notifapi 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номера сборки и редакции по умолчанию 
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.5.0")]
-[assembly: AssemblyFileVersion("1.2.5.0")]
+[assembly: AssemblyVersion("1.2.6.0")]
+[assembly: AssemblyFileVersion("1.2.6.0")]

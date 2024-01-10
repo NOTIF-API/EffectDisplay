@@ -1,5 +1,6 @@
 ﻿using Exiled.Events.EventArgs.Player;
 using EffectDisplay.Extension;
+using MEC;
 
 namespace EffectDisplay.EventHandler
 {
@@ -7,13 +8,20 @@ namespace EffectDisplay.EventHandler
     {
         public void OnVerefied(VerifiedEventArgs e)
         {
+            if (e.Player == null) return;
             if (!Main.Instance.DataBaseManager.GetMemberChose(e.Player.UserId))
             {
-                e.Player.GameObject.AddComponent<EffectReader>();
+                Timing.CallDelayed(0.2f, () => 
+                {
+                    e.Player.GameObject.AddComponent<EffectReader>();
+                });
             }
             else
             {
-                e.Player.GameObject.AddComponent<EffectReader>().IsEnabled = false;
+                Timing.CallDelayed(0.2f, () =>
+                {
+                    e.Player.GameObject.AddComponent<EffectReader>().IsEnabled = false;
+                });
                 return;
             }
         }

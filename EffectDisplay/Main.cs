@@ -4,14 +4,27 @@ using player = Exiled.Events.Handlers.Player;
 using System.IO;
 using EffectDisplay.Features;
 using MEC;
+using System;
 
 namespace EffectDisplay
 {
     public class Main: Plugin<Config>
     {
+        public override string Author { get; } = "notifapi";
+
+        public override string Name { get; } = "EffectDisplay";
+
+        public override bool IgnoreRequiredVersionCheck { get; } = false;
+
+        public override Version RequiredExiledVersion { get; } = new Version(8, 0, 0);
+
+        public override Version Version { get; } = new Version(1, 2, 6);
+
         public static Main Instance { get; private set; }
+
         private RoundEvent RoundEvent { get; set; } = null;
-        internal DataBaseManager DataBaseManager { get; set; }
+
+        internal DataBaseManager DataBaseManager { get; private set; }
 
         public override void OnEnabled()
         {

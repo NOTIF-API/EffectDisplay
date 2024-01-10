@@ -14,51 +14,14 @@ namespace EffectDisplay.Extension
     public class EffectReader: MonoBehaviour
     {
         public static int TotalEffectReaderComponents { get; private set; } = 0;
+
         private CoroutineHandle _CoroutineHandle;
+
         private Player _Player;
+
         private string _Name;
-        private StringBuilder sb;
+
         private const float EndlessEffectTime = 0.1f;
-        private List<EffectType> Positive { get; set; } = new List<EffectType>()
-        { 
-            EffectType.Invigorated,
-            EffectType.Invisible,
-            EffectType.RainbowTaste,
-            EffectType.BodyshotReduction,
-            EffectType.DamageReduction,
-            EffectType.MovementBoost,
-            EffectType.Vitality,
-            EffectType.Scp1853,
-            EffectType.SpawnProtected
-        };
-        private List<EffectType> Negative { get; set; } = new List<EffectType>()
-        {
-            EffectType.AmnesiaVision,
-            EffectType.AmnesiaItems,
-            EffectType.Asphyxiated,
-            EffectType.Bleeding,
-            EffectType.Blinded,
-            EffectType.Burned,
-            EffectType.Concussed,
-            EffectType.Corroding,
-            EffectType.PocketCorroding,
-            EffectType.Deafened,
-            EffectType.Decontaminating,
-            EffectType.Disabled,
-            EffectType.Ensnared,
-            EffectType.Exhausted,
-            EffectType.Flashed,
-            EffectType.Hemorrhage,
-            EffectType.Hypothermia,
-            EffectType.Poisoned,
-            EffectType.SinkHole,
-            EffectType.Stained,
-            EffectType.SeveredHands,
-            EffectType.Traumatized,
-            EffectType.CardiacArrest,
-            EffectType.Scanned
-        };
-        private Config _Config;
         /// <summary>
         /// determines whether the player wants to not see the message about active effects
         /// </summary>
@@ -75,22 +38,22 @@ namespace EffectDisplay.Extension
             }
             Log.Debug($"Added component to {_Player.Nickname}");
             _CoroutineHandle = Timing.RunCoroutine(EffectListener(), $"Efl-{_Player.Id}");
-            _Config = Main.Instance.Config;
             TotalEffectReaderComponents += 1;
         }
         private string IEffectCategory(EffectType effectType)
         {
-            if (Positive.Contains(effectType))
+            if (effectType == EffectType.Scp207)
             {
-                return _Config.GoodTypeWriting;
+                return Main.Instance.Config.MixedTypeWriting;
             }
-            if (Negative.Contains(effectType))
+
+            if (effectType.IsHarmful() || effectType.IsNegative())
             {
-                return _Config.BadTypeWriting;
+                return Main.Instance.Config.BadTypeWriting;
             }
             else
             {
-                return _Config.MixedTypeWriting;
+                return Main.Instance.Config.GoodTypeWriting;
             }
         }
         private void OnDestroy()
@@ -113,15 +76,15 @@ namespace EffectDisplay.Extension
                     ShowningText.AppendLine("\n\n\n");
                     foreach (StatusEffectBase effect in this._Player.ActiveEffects.Where(x => x.IsEnabled))
                     {
-                        if (_Config.BlackListEffect.Contains(effect.GetEffectType()))
+                        if (Main.Instance.Config.BlackListEffect.Contains(effect.GetEffectType()))
                         {
                             continue;
                         }
                         else
                         {
-                            string EffectLine = this._Config.EffectMessage;
+                            string EffectLine = Main.Instance.Config.EffectMessage;
                             EffectLine = EffectLine.Replace("{type}", IEffectCategory(effect.GetEffectType()));
-                            if (effect.Duration >= EndlessEffectTime)
+                            if (effect.Duration > EndlessEffectTime)
                             {
                                 EffectLine = EffectLine.Replace("{duration}", Convert.ToInt32(effect.TimeLeft).ToString());
                             }
@@ -137,7 +100,7 @@ namespace EffectDisplay.Extension
                     }
                     _Player.ShowHint($"{ShowningText.ToString()}", 1);
                 }
-                yield return Timing.WaitForSeconds(this._Config.TextUpdateTime);
+                yield return Timing.WaitForSeconds(Main.Instance.Config.TextUpdateTime);
             }
             Destroy(this);
         }

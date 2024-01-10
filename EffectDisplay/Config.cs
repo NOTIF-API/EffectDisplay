@@ -25,7 +25,8 @@ namespace EffectDisplay
         public List<EffectType> BlackListEffect { get; set; } = new List<EffectType>()
         {
             EffectType.SoundtrackMute,
-            EffectType.InsufficientLighting
+            EffectType.InsufficientLighting,
+            EffectType.BecomingFlamingo
         };
         [Description("defines the path to the database (do not change unless necessary")]
         public string PathToDatabase { get; set; } = "{ExiledConfigPath}/EffectDisplay/Player.db";
