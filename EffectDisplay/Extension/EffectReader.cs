@@ -90,6 +90,7 @@ namespace EffectDisplay.Extension
                             }
                             else
                             {
+                                
                                 EffectLine = EffectLine.Replace("{duration}", "inf");
                             }
                             Main.Instance.Config.EffectNameDisplay.TryGetValue(effect.GetEffectType(), out string name);

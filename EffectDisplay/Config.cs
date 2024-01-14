@@ -27,8 +27,7 @@ namespace EffectDisplay
         public List<EffectType> BlackListEffect { get; set; } = new List<EffectType>()
         {
             EffectType.SoundtrackMute,
-            EffectType.InsufficientLighting,
-            EffectType.BecomingFlamingo
+            EffectType.InsufficientLighting
         };
         [Description("how any effect will be displayed on the screen")]
         public Dictionary<EffectType, string> EffectNameDisplay { get; set; } = new Dictionary<EffectType, string>()
@@ -72,11 +71,7 @@ namespace EffectDisplay
             [EffectType.PocketCorroding] = "PocketCorroding",
             [EffectType.SilentWalk] = "SilentWalk",
             [EffectType.Strangled] = "Strangled",
-            [EffectType.Ghostly] = "Ghostly",
-            [EffectType.BecomingFlamingo] = "BecomingFlamingo",
-            [EffectType.Scp559] = "Scp559",
-            [EffectType.Scp956Target] = "Scp956Target",
-            [EffectType.Snowed] = "Snowed"
+            [EffectType.Ghostly] = "Ghostly"
         };
         [Description("defines the path to the database (do not change unless necessary")]
         public string PathToDatabase { get; set; } = "{ExiledConfigPath}/EffectDisplay/Player.db";
