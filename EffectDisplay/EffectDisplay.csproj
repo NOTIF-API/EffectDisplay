@@ -96,12 +96,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Features.cs" />
     <Compile Include="Commands\Check.cs" />
     <Compile Include="Commands\EfParent.cs" />
     <Compile Include="Commands\Total.cs" />
-    <Compile Include="Commands\Turn.cs" />
+    <Compile Include="Commands\display.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EventHandler\RoundEvent.cs" />
+    <Compile Include="Extension\LobbyChecker.cs" />
+    <Compile Include="Extension\RueIHints.cs" />
     <Compile Include="Features\DataBaseManager.cs" />
     <Compile Include="Features\Serelization\UserData.cs" />
     <Compile Include="Main.cs" />

@@ -70,7 +70,8 @@ namespace EffectDisplay.Extension
                 {
                     break;
                 }
-                if (this.IsEnabled & !this._Player.IsDead)
+              
+                if (this.IsEnabled & !this._Player.IsDead & LobbyChecker.IsLobby == false)
                 {
                     StringBuilder ShowningText = new StringBuilder();
                     ShowningText.AppendLine("\n\n\n");
@@ -100,7 +101,14 @@ namespace EffectDisplay.Extension
 
                         }
                     }
-                    _Player.ShowHint($"{ShowningText.ToString()}", 1);
+                    if (RueIHints.IsEnabled)
+                    {
+                        RueIHints.ShowHint(_Player, ShowningText.ToString(), TimeSpan.FromSeconds(1f));
+                    }
+                    else
+                    {
+                        _Player.ShowHint($"{ShowningText.ToString()}", 1);
+                    }
                 }
                 yield return Timing.WaitForSeconds(Main.Instance.Config.TextUpdateTime);
             }

@@ -15,9 +15,9 @@ namespace EffectDisplay.Commands
 
         public override void LoadGeneratedCommands()
         {
-            RegisterCommand(new Turn());
+            RegisterCommand(new display());
             RegisterCommand(new Check());
-            RegisterCommand(new Total());
+            RegisterCommand(new display());
         }
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)

@@ -6,6 +6,8 @@ using EffectDisplay.Features;
 using EffectDisplay.Extension;
 using MEC;
 using System;
+using Exiled.Loader;
+using System.Linq;
 
 namespace EffectDisplay
 {
@@ -30,7 +32,16 @@ namespace EffectDisplay
         public override void OnEnabled()
         {
             Instance = this;
-
+            /*
+            if (Loader.Dependencies.FirstOrDefault(x => x.GetName().Name == "RueI") != null)
+            {
+                Log.Debug("RueI detected and try to init");
+                RueIHints.InitRue();
+            }*/
+            if (LobbyChecker.LoadOrRefresh())
+            {
+                Log.Debug("Detected plugin Lobby");
+            }
             if (!Directory.Exists(Paths.Configs + "/EffectDisplay"))
             {
                 Log.Warn("The path to the file with the database was not found, we are creating");
