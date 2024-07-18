@@ -4,11 +4,9 @@ using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using MEC;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace EffectDisplay.Components
@@ -16,29 +14,55 @@ namespace EffectDisplay.Components
     public class UserEffectDisplayer: MonoBehaviour
     {
         private Player player;
+        /// <summary>
+        /// Stores the current process for future stopping
+        /// </summary>
+        private CoroutineHandle Current;
+
+        private bool Enabled = true;
+        /// <summary>
+        /// Will the display of effects be enabled?
+        /// </summary>
+        public bool IsEnabled
+        {
+            get
+            {
+                return Enabled;
+            }
+            set
+            {
+                Enabled = value;
+                Timing.KillCoroutines(Current);
+                if (value)
+                {
+                    Current = Timing.RunCoroutine(PlayerEffectShower(player));
+                }
+            }
+        }
 
         private string Category(EffectType effectType)
         {
             if (effectType == EffectType.Scp207 | effectType == EffectType.AntiScp207)
             {
-                return Plugin.Instance.Config.MixedEffect;
+                return Plugin.Instance.Config.EffectLine["Mixed"];
             }
 
             if (effectType.IsHarmful() || effectType.IsNegative())
             {
-                return Plugin.Instance.Config.BadEffect;
+                return Plugin.Instance.Config.EffectLine["Negative"];
             }
             else
             {
-                return Plugin.Instance.Config.GoodEffect;
+                return Plugin.Instance.Config.EffectLine["Positive"];
             }
         }
 
         private void Awake()
         {
             player = Player.Get(gameObject);
-            if (!player.DataChoise())
+            if (!player.IsAllow())
             {
+                this.IsEnabled = false;
                 return;
             }
             else
@@ -51,41 +75,31 @@ namespace EffectDisplay.Components
         {
             for (; ; )
             {
-                StringBuilder output = new StringBuilder();
-                output.Append("\n\n\n\n");
-                if (ply == null || !ply.IsConnected | !ply.DataChoise())
+                // check whether it is necessary to calculate active effects for the user at the current moment
+                if (ply.IsAlive | !Plugin.Instance.Config.IgnoredRoles.Contains(ply.Role.Type) | ply.ActiveEffects.Count() != 0)
                 {
-                    Destroy(this);
-                    break;
-                }
-                else
-                {
-                    foreach (StatusEffectBase type in ply.ActiveEffects)
+                    // we check whether the effects display has been disabled for the user or whether the player has disconnected
+                    if (ply == null | !ply.IsConnected | !this.Enabled)
                     {
-                        EffectType effect = type.GetEffectType();
-                        string name = "";
-                        if (Plugin.Instance.Config.EffectTranslation.ContainsKey(effect))
-                        {
-                            name = Plugin.Instance.Config.EffectTranslation[effect];
-                        }
-                        if (!Plugin.Instance.Config.EffectTranslation.ContainsKey(effect))
-                        {
-                            name = effect.ToString();
-                        }
-                        string line = $"{Plugin.Instance.Config.HintLocation}{Plugin.Instance.Config.EffectLineMessage.Replace("%effect%", name)}</align>";
-                        if (type.Duration < 0.1)
-                        {
-                            line = line.Replace("%time%", "inf");
-                        }
-                        if (type.Duration > 0.1)
-                        {
-                            line = line.Replace("%time%", ((int)type.TimeLeft).ToString());
-                        }
-                        line = line.Replace("%type%", Category(effect));
-                        output.AppendLine(line);
+                        Destroy(this);
+                        break;
                     }
-                    Log.Debug($"Try to show hint for ply {ply.Nickname}");
-                    ply.ShowHint(output.ToString(), 1);
+                    else
+                    {
+                        StringBuilder output = new StringBuilder();
+                        output.Append("\n\n\n\n");
+                        foreach (StatusEffectBase type in ply.ActiveEffects)
+                        {
+                            string name = Plugin.Instance.Config.GetTranslation(type.GetEffectType());
+                            string line = Category(type.GetEffectType());
+                            line = type.Duration == 0 ? line.Replace("%time%", "inf") : line.Replace("%time%", ((int)type.TimeLeft).ToString());
+                            line = line.Replace("%intensity%", type.Intensity.ToString());
+                            line = line.Replace("%type%", name);
+                            output.AppendLine(line);
+                        }
+                        Log.Debug($"{nameof(PlayerEffectShower)} Try to show hint for ply {ply.Nickname}");
+                        ply.ShowHint(output.ToString(), 1);
+                    }
                 }
                 yield return Timing.WaitForSeconds(0.9f);
             }

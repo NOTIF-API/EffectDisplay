@@ -1,12 +1,7 @@
 ﻿using CommandSystem;
 using EffectDisplay.Components;
 using Exiled.API.Features;
-using MEC;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EffectDisplay.commands
 {
@@ -17,17 +12,24 @@ namespace EffectDisplay.commands
 
         public string[] Aliases { get; set; } = Array.Empty<string>();
 
+        public bool SanitizeResponse => true;
+
         public string Description { get; set; } = "automaticly off or on displaying mode";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             Player ply = Player.Get(sender);
+            if ( !Plugin.Instance.Config.IsDatabaseUse )
+            {
+                response = "the command does not work on this server";
+                return false;
+            }
             bool flag = !Plugin.data.IsAllow(ply.UserId);
-            Plugin.data.SetAllowTo(ply.UserId, flag);
+            Plugin.data.IsAllow(ply.UserId, flag);
             if (flag)
             {
                 response = "command done\nactive effect showing now:)";
-                ply.GameObject.AddComponent<UserEffectDisplayer>();
+                ply.GameObject.GetComponent<UserEffectDisplayer>().IsEnabled = flag;
                 return true;
             }
             else

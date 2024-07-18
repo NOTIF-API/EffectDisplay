@@ -1,8 +1,5 @@
 ﻿using LiteDB;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using EffectDisplay.Features.Sereliazer;
 
 namespace EffectDisplay.Features
@@ -18,7 +15,10 @@ namespace EffectDisplay.Features
             Path = System.IO.Path.Combine(Plugin.Instance.Config.PathToDataBase, Plugin.Instance.Config.DatabaseName);
             db = new LiteDatabase(Path);
         }
-
+        /// <summary>
+        /// Checks the user for presence in the database and adds it if not found
+        /// </summary>
+        /// <param name="UserId">key for get user or set</param>
         private void MemberCheck(string UserId)
         {
             ILiteCollection<User> users = db.GetCollection<User>("users");
@@ -33,18 +33,37 @@ namespace EffectDisplay.Features
             db.Commit();
         }
         /// <summary>
+        /// Checks the user for presence in the database and adds it if not found
+        /// </summary>
+        /// <param name="UserId">key for get user or set</param>
+        /// <param name="IsAllow">Automatically set the <see cref="User.IsAllow"/> value to the user</param>
+        private void MemberCheck(string UserId, bool IsAllow = true)
+        {
+            ILiteCollection<User> users = db.GetCollection<User>("users");
+            User user = users.FindOne(x => x.UserId == UserId);
+            if (user == null)
+            {
+                user = new User();
+                user.UserId = UserId;
+                user.IsAllow = IsAllow;
+                users.Upsert(user);
+            }
+            else
+            {
+                user.UserId = UserId;
+                user.IsAllow = IsAllow;
+                users.Update(user);
+            }
+            db.Commit();
+        }
+        /// <summary>
         /// Set IsAllow parament"/>
         /// </summary>
         /// <param name="userid">user steam id to update</param>
         /// <param name="allow">our argument</param>
-        public void SetAllowTo(string userid, bool allow)
+        public void IsAllow(string userid, bool allow)
         {
-            ILiteCollection<User> users = db.GetCollection<User>("users");
-            MemberCheck(userid);
-            User user = users.FindOne(x => x.UserId == userid);
-            user.IsAllow = allow;
-            users.Update(user);
-            db.Commit();
+            MemberCheck(userid, allow);
         }
         /// <summary>
         /// Get IsAllow parametr
@@ -55,16 +74,11 @@ namespace EffectDisplay.Features
         {
             ILiteCollection<User> users = db.GetCollection<User>("users");
             User user = users.FindOne(x => x.UserId == userid);
-            if (user == null)
-            {
-                return true;
-            }
-            else
-            {
-                return user.IsAllow;
-            }
+            return user == null ? false : user.IsAllow;
         }
-
+        /// <summary>
+        /// Clear all resources and save data base
+        /// </summary>
         public void Dispose()
         {
             this.SaveData();
@@ -72,7 +86,7 @@ namespace EffectDisplay.Features
             Path = null;
         }
 
-        public void SaveData()
+        private void SaveData()
         {
             db.Commit();
             db.Dispose();

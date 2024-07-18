@@ -13,15 +13,17 @@ namespace EffectDisplay
 
         public override string Name { get; } = "EffectDisplay";
 
-        public override Version Version { get; } = new Version(2, 0, 0);
+        public override Version Version { get; } = new Version(2, 0, 1);
 
-        public override Version RequiredExiledVersion { get; } = new Version(8, 9, 0);
+        public override Version RequiredExiledVersion { get; } = new Version(9, 0, 0);
+
+        public override bool IgnoreRequiredVersionCheck { get; } = false;
 
         public static Plugin Instance { get; private set; }
 
         public static DataBase data { get; private set; }
 
-        private PlayerEvent pl { get; set; } = null;
+        private PlayerEvent Event { get; set; }
 
         public override void OnEnabled()
         {
@@ -30,38 +32,39 @@ namespace EffectDisplay
             Timing.CallDelayed(0.5f, () => {
                 data = new DataBase();
             });
-            pl = new PlayerEvent();
-            RegisterEvents();
-
+            Event = new PlayerEvent();
             base.OnEnabled();
         }
 
         public override void OnDisabled()
         {
-            UnRegisterEvents();
             data.Dispose();
             data = null;
             Instance = null;
-            pl = null;
+            Event = null;
             base.OnDisabled();
         }
 
-        private void RegisterEvents()
+        protected override void SubscribeEvents()
         {
-            Exiled.Events.Handlers.Player.Verified += pl.OnVerefied;
+            Log.Debug($"{nameof(SubscribeEvents)} starting registering event");
+            Exiled.Events.Handlers.Player.Verified += Event.OnVerefied;
         }
-        private void UnRegisterEvents()
+
+        protected override void UnsubscribeEvents()
         {
-            Exiled.Events.Handlers.Player.Verified -= pl.OnVerefied;
+            Log.Debug($"{nameof(UnsubscribeEvents)} starting unregistering event");
+            Exiled.Events.Handlers.Player.Verified -= Event.OnVerefied;
         }
         /// <summary>
         /// checks for the presence of a database folder with configurations provided
         /// </summary>
         private void CheckDataBase()
         {
-            Log.Debug("Checking existing data base");
+            Log.Debug($"{nameof(CheckDataBase)} Checking existing data base");
             if (!this.Config.IsDatabaseUse)
             {
+                Log.Warn("Database usage is disabled, players will not be able to enable effects display");
                 return;
             }
             else

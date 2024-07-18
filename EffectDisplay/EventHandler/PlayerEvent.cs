@@ -1,7 +1,5 @@
 ﻿using EffectDisplay.Components;
-using Exiled.API.Features;
 using Exiled.Events.EventArgs.Player;
-using MEC;
 
 namespace EffectDisplay.EventHandler
 {
@@ -9,14 +7,7 @@ namespace EffectDisplay.EventHandler
     {
         public void OnVerefied(VerifiedEventArgs e)
         {
-            if (e.Player == null | e.Player.GameObject.GetComponent<UserEffectDisplayer>() != null)
-            {
-                return;
-            }
-            else
-            {
-                e.Player.GameObject.AddComponent<UserEffectDisplayer>();
-            }
+            e.Player?.GameObject.AddComponent<UserEffectDisplayer>();
         }
     }
 }

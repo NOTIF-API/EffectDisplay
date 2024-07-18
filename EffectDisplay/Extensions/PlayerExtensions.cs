@@ -1,15 +1,18 @@
-﻿using Exiled.API.Features;
+﻿using EffectDisplay.Components;
+using Exiled.API.Features;
 
 namespace EffectDisplay.Extensions
 {
     public static class PlayerExtensions
     {
         /// <summary>
-        /// determines the user's choice of displaying effect status
+        /// Returns the Allow parameter that determines the permission to show the display
         /// </summary>
         /// <param name="player"></param>
-        /// <returns>true if is allow or false</returns>
-        public static bool DataChoise(this Player player) => Plugin.data.IsAllow(player.UserId);
-
+        public static bool IsAllow(this Player player) => Plugin.data.IsAllow(player.UserId);
+        /// <summary>
+        /// Allows you to change the value of the IsAllow parameter
+        /// </summary>
+        public static void IsAllow(this Player player, bool IsAllow) => Plugin.data.IsAllow(player.UserId, IsAllow);
     }
 }
