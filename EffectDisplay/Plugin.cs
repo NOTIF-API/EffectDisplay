@@ -33,11 +33,13 @@ namespace EffectDisplay
                 data = new DataBase();
             });
             Event = new PlayerEvent();
+            SubscribeEvents();
             base.OnEnabled();
         }
 
         public override void OnDisabled()
         {
+            UnsubscribeEvents();
             data.Dispose();
             data = null;
             Instance = null;
@@ -45,13 +47,13 @@ namespace EffectDisplay
             base.OnDisabled();
         }
 
-        protected override void SubscribeEvents()
+        protected void SubscribeEvents()
         {
             Log.Debug($"{nameof(SubscribeEvents)} starting registering event");
             Exiled.Events.Handlers.Player.Verified += Event.OnVerefied;
         }
 
-        protected override void UnsubscribeEvents()
+        protected void UnsubscribeEvents()
         {
             Log.Debug($"{nameof(UnsubscribeEvents)} starting unregistering event");
             Exiled.Events.Handlers.Player.Verified -= Event.OnVerefied;

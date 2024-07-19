@@ -22,9 +22,9 @@ namespace EffectDisplay
         [Description("these lines will be displayed for each effect type separately, allowing you to customize them")]
         public Dictionary<string, string> EffectLine { get; set; } = new Dictionary<string, string>()
         {
-            {"Mixed", "<size=12>%effect% is <color=\"purple\">%type% end after %time%|%duration%" },
-            {"Positive", "<size=12>%effect% is <color=\"green\">%type% end after %time%|%duration%" },
-            {"Negative", "<size=12>%effect% is <color=\"red\">%type% end after %time%|%duration%" }
+            {"Mixed", "<size=12>%effect% is <color=\"purple\">Mixed</color> end after %time%|%duration%" },
+            {"Positive", "<size=12>%effect% is <color=\"green\">Positive</color> end after %time%|%duration%" },
+            {"Negative", "<size=12>%effect% is <color=\"red\">Negative</color> end after %time%|%duration%" },
         };
 
         [Description("decomposes the text on the screen to change only to what is processed by align")]

@@ -97,7 +97,7 @@ namespace EffectDisplay.Components
                             // Effect duration total
                             line = type.Duration == 0 ? line.Replace("%duration%", "inf") : line.Replace("%duration%", type.Duration.ToString());
                             line = line.Replace("%intensity%", type.Intensity.ToString());
-                            line = line.Replace("%type%", name);
+                            line = line.Replace("%effect%", name);
                             output.AppendLine(line);
                         }
                         Log.Debug($"{nameof(PlayerEffectShower)} Try to show hint for ply {ply.Nickname}");
