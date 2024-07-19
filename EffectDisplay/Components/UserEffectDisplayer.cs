@@ -92,7 +92,10 @@ namespace EffectDisplay.Components
                         {
                             string name = Plugin.Instance.Config.GetTranslation(type.GetEffectType());
                             string line = Category(type.GetEffectType());
+                            // Current end time line
                             line = type.Duration == 0 ? line.Replace("%time%", "inf") : line.Replace("%time%", ((int)type.TimeLeft).ToString());
+                            // Effect duration total
+                            line = type.Duration == 0 ? line.Replace("%duration%", "inf") : line.Replace("%duration%", type.Duration.ToString());
                             line = line.Replace("%intensity%", type.Intensity.ToString());
                             line = line.Replace("%type%", name);
                             output.AppendLine(line);

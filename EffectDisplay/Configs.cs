@@ -22,9 +22,9 @@ namespace EffectDisplay
         [Description("these lines will be displayed for each effect type separately, allowing you to customize them")]
         public Dictionary<string, string> EffectLine { get; set; } = new Dictionary<string, string>()
         {
-            {"Mixed", "<size=12>%effect% is <color=\"purple\">%type% end after %time%" },
-            {"Positive", "<size=12>%effect% is <color=\"green\">%type% end after %time%" },
-            {"Negative", "<size=12>%effect% is <color=\"red\">%type% end after %time%" }
+            {"Mixed", "<size=12>%effect% is <color=\"purple\">%type% end after %time%|%duration%" },
+            {"Positive", "<size=12>%effect% is <color=\"green\">%type% end after %time%|%duration%" },
+            {"Negative", "<size=12>%effect% is <color=\"red\">%type% end after %time%|%duration%" }
         };
 
         [Description("decomposes the text on the screen to change only to what is processed by align")]
@@ -51,11 +51,12 @@ namespace EffectDisplay
         [Description("List of roles for which the effects display will not be displayed (the roles of the dead are ignored)")]
         public List<RoleTypeId> IgnoredRoles { get; set; } = new List<RoleTypeId>()
         {
-            
+            RoleTypeId.None,
+            RoleTypeId.Spectator
         };
 
         /// <summary>
-        /// Return effect name from <see cref="EffectTranslation"/> or <see cref="EffectType"/> as <see cref="string"></see>
+        /// Return effect name from <see cref="EffectTranslation"/> and if not found in it return <see cref="EffectType"/> as <see cref="string"></see>
         /// </summary>
         public string GetTranslation(EffectType effectType)
         {
