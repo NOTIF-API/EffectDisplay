@@ -1,6 +1,7 @@
 ﻿using LiteDB;
 using System;
 using EffectDisplay.Features.Sereliazer;
+using Exiled.API.Features;
 
 namespace EffectDisplay.Features
 {
@@ -74,7 +75,8 @@ namespace EffectDisplay.Features
         {
             ILiteCollection<User> users = db.GetCollection<User>("users");
             User user = users.FindOne(x => x.UserId == userid);
-            return user == null ? false : user.IsAllow;
+            Log.Debug(user);
+            return user is null ? true : user.IsAllow;
         }
         /// <summary>
         /// Clear all resources and save data base

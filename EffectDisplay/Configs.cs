@@ -40,13 +40,13 @@ namespace EffectDisplay
         [Description("https://discord.com/channels/656673194693885975/1172647045237067788/1172647045237067788 determines the name of the effect from the existing list to the one you specify")]
         public Dictionary<EffectType, string> EffectTranslation { get; set; } = new Dictionary<EffectType, string>()
         {
-            { EffectType.Blinded, "Blinded" }
+            { EffectType.None, "UnkownEffect" }
         };
 
         [Description("defines the database name in the path (required at the end of .db)")]
         public string DatabaseName { get; set; } = "data.db";
 
-        [Description("locates the database")]
+        [Description("folder location current database")]
         public string PathToDataBase { get; set; } = Path.Combine(Paths.Configs, "EffectDisplay");
         [Description("List of roles for which the effects display will not be displayed (the roles of the dead are ignored)")]
         public List<RoleTypeId> IgnoredRoles { get; set; } = new List<RoleTypeId>()
@@ -56,7 +56,7 @@ namespace EffectDisplay
         };
 
         /// <summary>
-        /// Return effect name from <see cref="EffectTranslation"/> and if not found in it return <see cref="EffectType"/> as <see cref="string"></see>
+        /// Return effect name from <see cref="EffectTranslation"/> if not found return <see cref="EffectType"/> as <see cref="string"></see>
         /// </summary>
         public string GetTranslation(EffectType effectType)
         {

@@ -40,14 +40,13 @@ namespace EffectDisplay.Components
             }
         }
 
-        private string Category(EffectType effectType)
+        private string Category(StatusEffectBase statusEffectBase)
         {
-            if (effectType == EffectType.Scp207 | effectType == EffectType.AntiScp207)
+            if (statusEffectBase.Classification == StatusEffectBase.EffectClassification.Mixed)
             {
                 return Plugin.Instance.Config.EffectLine["Mixed"];
             }
-
-            if (effectType.IsHarmful() || effectType.IsNegative())
+            if (statusEffectBase.Classification == StatusEffectBase.EffectClassification.Negative)
             {
                 return Plugin.Instance.Config.EffectLine["Negative"];
             }
@@ -59,15 +58,19 @@ namespace EffectDisplay.Components
 
         private void Awake()
         {
+            Log.Debug($"{nameof(Awake)} Initing component");
             player = Player.Get(gameObject);
-            if (!player.IsAllow())
+            Log.Debug(player);
+            if (player.IsAllow())
             {
-                this.IsEnabled = false;
-                return;
+                Log.Debug("Starting Corountine");
+                Timing.RunCoroutine(PlayerEffectShower(player));
             }
             else
             {
-                Timing.RunCoroutine(PlayerEffectShower(player));
+                this.IsEnabled = false;
+                Timing.KillCoroutines(this.Current);
+                return;
             }
         }
 
@@ -81,6 +84,7 @@ namespace EffectDisplay.Components
                     // we check whether the effects display has been disabled for the user or whether the player has disconnected
                     if (ply == null | !ply.IsConnected | !this.Enabled)
                     {
+                        Log.Debug("Destroy components");
                         Destroy(this);
                         break;
                     }
@@ -91,7 +95,7 @@ namespace EffectDisplay.Components
                         foreach (StatusEffectBase type in ply.ActiveEffects)
                         {
                             string name = Plugin.Instance.Config.GetTranslation(type.GetEffectType());
-                            string line = Category(type.GetEffectType());
+                            string line = $"{Plugin.Instance.Config.HintLocation}{Category(type)}</align>";
                             // Current end time line
                             line = type.Duration == 0 ? line.Replace("%time%", "inf") : line.Replace("%time%", ((int)type.TimeLeft).ToString());
                             // Effect duration total
@@ -100,7 +104,6 @@ namespace EffectDisplay.Components
                             line = line.Replace("%effect%", name);
                             output.AppendLine(line);
                         }
-                        Log.Debug($"{nameof(PlayerEffectShower)} Try to show hint for ply {ply.Nickname}");
                         ply.ShowHint(output.ToString(), 1);
                     }
                 }
