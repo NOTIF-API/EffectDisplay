@@ -33,7 +33,7 @@ effect_translation:
 # defines the database name in the path (required at the end of .db)
 database_name: 'data.db'
 # locates the database
-path_to_data_base: 'C:\Users\NOTIF-ZTA23\AppData\Roaming\EXILED\Configs\EffectDisplay'
+path_to_data_base: 'C:\Users\User\AppData\Roaming\EXILED\Configs\EffectDisplay'
 # List of roles for which the effects display will not be displayed (the roles of the dead are ignored)
 ignored_roles:
   - Spectator
