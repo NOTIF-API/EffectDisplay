@@ -10,38 +10,60 @@ If you find errors, you can contact me in any way convenient for you, but if you
 Also, if you have ideas for adding something new, write there
 # Configs
 ```yaml
+effect_display:
 # will the plugin be active?
-is_enabled: false
-# will information be displayed for the developer, will help when errors are detected
-debug: false
-# will a database be used
-is_database_use: true
-# these lines will be displayed for each effect type separately, allowing you to customize them
-effect_line:
-  Mixed: <size=12>%effect% is <color=\"purple\">Mixed</color> end after %time%|%duration%
-  Positive: <size=12>%effect% is <color=\"green\">Positive</color> end after %time%|%duration%
-  Negative: <size=12>%effect% is <color=\"red\">Negative</color> end after %time%|%duration%
-# decomposes the text on the screen to change only to what is processed by align
-hint_location: '<align=left>'
-# defines a list of effects that the player will not see (the effects of the technical process are automatically hidden)
-black_list:
-- CardiacArrest
-- InsufficientLighting
-# https://discord.com/channels/656673194693885975/1172647045237067788/1172647045237067788 determines the name of the effect from the existing list to the one you specify
-effect_translation:
-  Bleeding: Blinded
-# defines the database name in the path (required at the end of .db)
-database_name: 'data.db'
-# locates the database
-path_to_data_base: 'C:\Users\User\AppData\Roaming\EXILED\Configs\EffectDisplay'
-# List of roles for which the effects display will not be displayed (the roles of the dead are ignored)
-ignored_roles:
-  - Spectator
+  is_enabled: true
+  # will information be displayed for the developer, will help when errors are detected
+  debug: false
+  # will merge with other Hint service providers (for example HintServiceMeow) - if they are installed, it will switch itself
+  third_party: true
+  # will a database be used
+  is_database_use: true
+  # the time period for which information is updated
+  update_time: 0.90000000000000002
+  # these lines will be displayed for each effect type separately, allowing you to customize them
+  effect_line:
+    Mixed: '<color="purple">%effect%</color> -> %time%/%duration% LVL: %intensity%'
+    Positive: '<color="green">%effect%</color> -> %time%/%duration% LVL: %intensity%'
+    Negative: '<color="red">%effect%</color> -> %time%/%duration% LVL: %intensity%'
+  # defines a list of effects that the player will not see (the effects of the technical process are hidden)
+  black_list:
+  - InsufficientLighting
+  - SoundtrackMute
+  # https://discord.com/channels/656673194693885975/1172647045237067788/1172647045237067788 determines the name of the effect from the existing list to the one you specify
+  effect_translation:
+    None: UnkownEffect
+  # defines the database name in the path (required at the end of .db)
+  database_name: 'data.db'
+  # folder location current database
+  path_to_data_base: 'C:\Users\ScpBulBulBul\AppData\Roaming\EXILED\Configs\EffectDisplay'
+  # List of roles for which the effects display will not be displayed (the roles of the dead are ignored without configs sets)
+  ignored_roles:
   - None
+  - Spectator
+  # Standard settings for displaying information, used in the absence of any supported Hint providers
+  native_hint_settings:
+  # Text size
+    font_size: 12
+    # Text aligment
+    aligment: 'Left'
+  # If you use MeowHintService for Exiled then these settings will be useful for customizing the display
+  meow_hint_settings:
+  # Text size
+    font_size: 16
+    # Position Y Horizontal coordinate 0 -> 1080
+    y_coordinate: 900
+    # Position X Vertical coordinate -1200 -> 1200
+    x_coordinate: -1200
+    # Hint aligment (Left, Right, Center)
+    aligment: 'Left'
+    # Hint vertical aligment (Top, Bottom, Middle)
+    vertical_aligment: 'Bottom'
 ```
 ## How edit
 | effect_line | description |
 | ------------ | ----- |
-| %duration%   | when specified in the line, it is replaced by the duration of the effect issued |
-| %time%       | when specified in the line, it is replaced by the time after which the effect will end |
-| %effect%     | when specified in a line, it is replaced with the name of the effect that is specified in `effect_translation` or its standard value |
+| %duration%   | Replaces the line with the maximum duration of the effect (I personally noticed a problem when using an item that gives effects more than 2 times, the duration is summed up and the effect time remains the same) |
+| %time%       | Replaces the string with the remaining time until the end of the effect |
+| %effect%     | Replaces with the effect name specified in the configuration or its standard form |
+| %intensity%  | Replaces the effect strength which is calculated in game `byte`, that is from 0 to 255 |
