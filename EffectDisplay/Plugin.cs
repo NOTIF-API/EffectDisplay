@@ -18,7 +18,7 @@ namespace EffectDisplay
 
         public override string Name { get; } = "EffectDisplay";
 
-        public override Version Version { get; } = new Version(2, 1, 0);
+        public override Version Version { get; } = new Version(2, 2, 0);
 
         public override Version RequiredExiledVersion { get; } = new Version(9, 0, 0);
 
