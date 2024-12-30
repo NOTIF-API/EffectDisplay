@@ -14,27 +14,27 @@ namespace EffectDisplay.commands
 
         public bool SanitizeResponse => true;
 
-        public string Description { get; set; } = "automaticly off or on displaying mode";
+        public string Description { get; set; } = "The command automatically switches the display mode of active effects.";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             Player ply = Player.Get(sender);
             if ( !Plugin.Instance.Config.IsDatabaseUse )
             {
-                response = "the command does not work on this server";
+                response = "The specified server does not have this function.";
                 return false;
             }
             bool flag = !Plugin.data.IsAllow(ply.UserId);
             Plugin.data.IsAllow(ply.UserId, flag);
+            ply.GameObject.GetComponent<UserEffectDisplayer>().IsEnabled = flag;
             if (flag)
             {
-                response = "command done\nactive effect showing now:)";
-                ply.GameObject.GetComponent<UserEffectDisplayer>().IsEnabled = flag;
+                response = "The command was completed successfully.\nDisplay of active effects will be enabled for you.";
                 return true;
             }
             else
             {
-                response = "done hided effect showing for you";
+                response = "The command was completed successfully.\nDisplay of active effects will be disabled for you.";
                 return true;
             }
         }

@@ -2,6 +2,8 @@
 using Exiled.API.Features;
 using Exiled.Events.EventArgs.Player;
 
+using MEC;
+
 namespace EffectDisplay.EventHandler
 {
     public class PlayerEvent
@@ -10,7 +12,7 @@ namespace EffectDisplay.EventHandler
         {
             Log.Debug(e.Player);
             e.Player?.GameObject.AddComponent<UserEffectDisplayer>();
-            Log.Debug($"{nameof(OnVerefied)} Added {nameof(UserEffectDisplayer)} components");
+            Log.Debug($"{nameof(OnVerefied)}: Added {nameof(UserEffectDisplayer)} components.");
         }
     }
 }

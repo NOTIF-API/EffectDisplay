@@ -1,9 +1,11 @@
-﻿using CustomPlayerEffects;
-using EffectDisplay.Extensions;
-using Exiled.API.Enums;
+﻿using EffectDisplay.Extensions;
+using EffectDisplay.Features;
+
 using Exiled.API.Extensions;
 using Exiled.API.Features;
+
 using MEC;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +15,7 @@ namespace EffectDisplay.Components
 {
     public class UserEffectDisplayer: MonoBehaviour
     {
+        private MeowHintManager MeowHintManager;
         private Player player;
         /// <summary>
         /// Stores the current process for future stopping
@@ -31,40 +34,29 @@ namespace EffectDisplay.Components
             }
             set
             {
+                Log.Debug($"{nameof(IsEnabled)}.Set: {Enabled} -> {value}.");
                 Enabled = value;
                 Timing.KillCoroutines(Current);
                 if (value)
                 {
-                    Current = Timing.RunCoroutine(PlayerEffectShower(player));
+                    Current = Timing.RunCoroutine(PlayerEffectShower());
                 }
-            }
-        }
-
-        private string Category(StatusEffectBase statusEffectBase)
-        {
-            if (statusEffectBase.Classification == StatusEffectBase.EffectClassification.Mixed)
-            {
-                return Plugin.Instance.Config.EffectLine["Mixed"];
-            }
-            if (statusEffectBase.Classification == StatusEffectBase.EffectClassification.Negative)
-            {
-                return Plugin.Instance.Config.EffectLine["Negative"];
-            }
-            else
-            {
-                return Plugin.Instance.Config.EffectLine["Positive"];
             }
         }
 
         private void Awake()
         {
-            Log.Debug($"{nameof(Awake)} Initing component");
+            Log.Debug($"{nameof(Awake)}: Initing component.");
             player = Player.Get(gameObject);
-            Log.Debug(player);
+            Log.Debug($"{nameof(Awake)}: {player.Nickname} Awake and adding component handling.");
             if (player.IsAllow())
             {
-                Log.Debug("Starting Corountine");
-                Timing.RunCoroutine(PlayerEffectShower(player));
+                Log.Debug($"{nameof(Awake)}: Starting Corountine.");
+                Timing.RunCoroutine(PlayerEffectShower());
+            }
+            if (Plugin.HintServiceMeowDetected)
+            {
+                MeowHintManager = new MeowHintManager();
             }
             else
             {
@@ -74,40 +66,73 @@ namespace EffectDisplay.Components
             }
         }
 
-        private IEnumerator<float> PlayerEffectShower(Player ply)
+        private IEnumerator<float> PlayerEffectShower()
         {
+            bool showing = false;
             for (; ; )
             {
-                // check whether it is necessary to calculate active effects for the user at the current moment
-                if (ply.IsAlive | !Plugin.Instance.Config.IgnoredRoles.Contains(ply.Role.Type) | ply.ActiveEffects.Count() != 0)
+                if (player == null)
                 {
-                    // we check whether the effects display has been disabled for the user or whether the player has disconnected
-                    if (ply == null | !ply.IsConnected | !this.Enabled)
-                    {
-                        Log.Debug("Destroy components");
-                        Destroy(this);
-                        break;
-                    }
-                    else
-                    {
-                        StringBuilder output = new StringBuilder();
-                        output.Append("\n\n\n\n");
-                        foreach (StatusEffectBase type in ply.ActiveEffects)
-                        {
-                            string name = Plugin.Instance.Config.GetTranslation(type.GetEffectType());
-                            string line = $"{Plugin.Instance.Config.HintLocation}{Category(type)}</align>";
-                            // Current end time line
-                            line = type.Duration == 0 ? line.Replace("%time%", "inf") : line.Replace("%time%", ((int)type.TimeLeft).ToString());
-                            // Effect duration total
-                            line = type.Duration == 0 ? line.Replace("%duration%", "inf") : line.Replace("%duration%", type.Duration.ToString());
-                            line = line.Replace("%intensity%", type.Intensity.ToString());
-                            line = line.Replace("%effect%", name);
-                            output.AppendLine(line);
-                        }
-                        ply.ShowHint(output.ToString(), 1);
-                    }
+                    yield break;
                 }
-                yield return Timing.WaitForSeconds(0.9f);
+                if (IsEnabled == false)
+                {
+                    yield break;
+                }
+                if (player.IsDead | Plugin.Instance.Config.IgnoredRoles.Contains(player.Role.Type))
+                {
+                    yield return Timing.WaitForSeconds(2);
+                    continue;
+                }
+                if (player.ActiveEffects.Where(x => !Plugin.Instance.Config.BlackList.Contains(x.GetEffectType())).Count() == 0)
+                {
+                    MeowHintManager.RemoveHint(player, MeowHintManager.GetHintProcessionObject());
+                    showing = false;
+                    yield return Timing.WaitForSeconds(0.1f);
+                    continue;
+                }
+                if (Plugin.HintServiceMeowDetected & showing)
+                {
+                    MeowHintManager.RemoveHint(player, MeowHintManager.GetHintProcessionObject());
+                    showing = false;
+                }
+                StringBuilder InfoLine = new StringBuilder();
+                if (!Plugin.HintServiceMeowDetected)
+                {
+                    InfoLine.Append("\n\n\n\n");
+                    InfoLine.AppendLine($"<size={Plugin.Instance.Config.NativeHintSettings.FontSize}><align={Plugin.Instance.Config.NativeHintSettings.Aligment.ToLower()}>");
+                }
+                foreach (var item in player.ActiveEffects)
+                {
+                    if (Plugin.Instance.Config.BlackList.Contains(item.GetEffectType())) continue;
+                    string processingline = Plugin.Instance.Config.EffectLine[item.Classification];
+                    if (string.IsNullOrEmpty(processingline)) continue;
+                    processingline = processingline.Replace("%time%", ((int)item.TimeLeft) == 0 ? string.Empty : ((int)item.TimeLeft).ToString());
+                    processingline = processingline.Replace("%duration%", item.Duration == 0 ? "inf" : ((int)item.Duration).ToString());
+                    processingline = processingline.Replace("%effect%", Plugin.Instance.Config.GetName(item.GetEffectType()));
+                    processingline = processingline.Replace("%intensity%", item.Intensity.ToString());
+                    InfoLine.AppendLine(processingline);
+                }
+                if (Plugin.HintServiceMeowDetected)
+                {
+                    MeowHintManager = new MeowHintManager();
+                    MeowHintManager.SetText(InfoLine.ToString());
+                    MeowHintManager.SetId("EffectDisplay");
+                    MeowHintManager.SetFont(Plugin.Instance.Config.MeowHintSettings.FontSize);
+                    MeowHintManager.SetHorizontalAligment(Plugin.Instance.Config.MeowHintSettings.Aligment);
+                    MeowHintManager.SetVerticalAligment(Plugin.Instance.Config.MeowHintSettings.VerticalAligment);
+                    MeowHintManager.SetYCoordinates(Plugin.Instance.Config.MeowHintSettings.YCoordinate);
+                    MeowHintManager.SetXCoordinate(Plugin.Instance.Config.MeowHintSettings.XCoordinate);
+                    MeowHintManager.AddHint(player, MeowHintManager.GetHintProcessionObject());
+                    showing = true;
+                }
+                else if (!Plugin.HintServiceMeowDetected)
+                {
+                    string res = InfoLine.ToString() + "</size></align>";
+                    player.ShowHint(res, (float)Plugin.Instance.Config.UpdateTime);
+                }
+                Log.Debug($"Iteration {player.Nickname}: processed.");
+                yield return Timing.WaitForSeconds((float)Plugin.Instance.Config.UpdateTime);
             }
         }
     }

@@ -17,10 +17,10 @@ namespace EffectDisplay.Features
             db = new LiteDatabase(Path);
         }
         /// <summary>
-        /// Checks the user for presence in the database and adds it if not found
+        /// Finds out if the user exists and adds it to the database if not present 
         /// </summary>
-        /// <param name="UserId">key for get user or set</param>
-        private void MemberCheck(string UserId)
+        /// <param name="UserId">User id</param>
+        private void GetUserExist(string UserId)
         {
             ILiteCollection<User> users = db.GetCollection<User>("users");
             User user = users.FindOne(x => x.UserId == UserId);
@@ -34,11 +34,11 @@ namespace EffectDisplay.Features
             db.Commit();
         }
         /// <summary>
-        /// Checks the user for presence in the database and adds it if not found
+        /// Finds out whether the user exists and adds it to the database if not present with the specified <see cref="User.IsAllow"/> parameter
         /// </summary>
-        /// <param name="UserId">key for get user or set</param>
-        /// <param name="IsAllow">Automatically set the <see cref="User.IsAllow"/> value to the user</param>
-        private void MemberCheck(string UserId, bool IsAllow = true)
+        /// <param name="UserId">User id</param>
+        /// <param name="IsAllow">Automatically set the <see cref="User.IsAllow"/> value</param>
+        private void GetUserExist(string UserId, bool IsAllow = true)
         {
             ILiteCollection<User> users = db.GetCollection<User>("users");
             User user = users.FindOne(x => x.UserId == UserId);
@@ -51,30 +51,29 @@ namespace EffectDisplay.Features
             }
             else
             {
-                user.UserId = UserId;
                 user.IsAllow = IsAllow;
                 users.Update(user);
             }
             db.Commit();
         }
         /// <summary>
-        /// Set IsAllow parament"/>
+        /// Set <see cref="User.IsAllow"/> parametr
         /// </summary>
-        /// <param name="userid">user steam id to update</param>
+        /// <param name="UserId">User id</param>
         /// <param name="allow">our argument</param>
-        public void IsAllow(string userid, bool allow)
+        public void IsAllow(string UserId, bool allow)
         {
-            MemberCheck(userid, allow);
+            GetUserExist(UserId, allow);
         }
         /// <summary>
         /// Get IsAllow parametr
         /// </summary>
-        /// <param name="userid">user steam id</param>
+        /// <param name="UserId">User id</param>
         /// <returns></returns>
-        public bool IsAllow(string userid)
+        public bool IsAllow(string UserId)
         {
             ILiteCollection<User> users = db.GetCollection<User>("users");
-            User user = users.FindOne(x => x.UserId == userid);
+            User user = users.FindOne(x => x.UserId == UserId);
             Log.Debug(user);
             return user is null ? true : user.IsAllow;
         }

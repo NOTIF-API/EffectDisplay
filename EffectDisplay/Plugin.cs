@@ -1,9 +1,14 @@
 ﻿using EffectDisplay.EventHandler;
 using EffectDisplay.Features;
 using Exiled.API.Features;
+using Exiled.Loader;
+
 using MEC;
 using System;
 using System.IO;
+using System.Linq;
+
+using UnityEngine;
 
 namespace EffectDisplay
 {
@@ -13,9 +18,9 @@ namespace EffectDisplay
 
         public override string Name { get; } = "EffectDisplay";
 
-        public override Version Version { get; } = new Version(2, 0, 1);
+        public override Version Version { get; } = new Version(2, 1, 0);
 
-        public override Version RequiredExiledVersion { get; } = new Version(8, 9, 0);
+        public override Version RequiredExiledVersion { get; } = new Version(9, 0, 0);
 
         public override bool IgnoreRequiredVersionCheck { get; } = false;
 
@@ -25,10 +30,13 @@ namespace EffectDisplay
 
         private PlayerEvent Event { get; set; }
 
+        public static bool HintServiceMeowDetected { get; private set; } = false;
+
         public override void OnEnabled()
         {
-            CheckDataBase();
+            DBCondition();
             Instance = this;
+            // if not delayed exception called
             Timing.CallDelayed(0.5f, () => {
                 data = new DataBase();
             });
@@ -38,34 +46,51 @@ namespace EffectDisplay
         }
 
         public override void OnDisabled()
-        {
+        { 
             UnsubscribeEvents();
             data.Dispose();
             data = null;
             Instance = null;
             Event = null;
+            HintServiceMeowDetected = false;
             base.OnDisabled();
         }
 
         protected void SubscribeEvents()
         {
-            Log.Debug($"{nameof(SubscribeEvents)} starting registering event");
+            Log.Debug($"{nameof(SubscribeEvents)}: Subscribe to the event.");
             Exiled.Events.Handlers.Player.Verified += Event.OnVerefied;
+            Exiled.Events.Handlers.Server.WaitingForPlayers += OnWaitingForPlayers;
+        }
+        /// <summary>
+        /// needed to check the presence of third-party plugins after they are fully loaded
+        /// </summary>
+        private void OnWaitingForPlayers()
+        {
+            if (Config.ThirdParty)
+            {
+                if (Loader.Plugins.Where(x => x.Name == "HintServiceMeow").FirstOrDefault() != null)
+                {
+                    HintServiceMeowDetected = true;
+                    Log.Info($"{nameof(OnWaitingForPlayers)}: A third-party provider has been detected. The Hint plugin will be adjusted to work with it automatically.");
+                }
+            }
         }
 
         protected void UnsubscribeEvents()
         {
-            Log.Debug($"{nameof(UnsubscribeEvents)} starting unregistering event");
+            Log.Debug($"{nameof(UnsubscribeEvents)}: Unsubscribe from events.");
             Exiled.Events.Handlers.Player.Verified -= Event.OnVerefied;
+            Exiled.Events.Handlers.Server.WaitingForPlayers -= OnWaitingForPlayers;
         }
         /// <summary>
-        /// checks for the presence of a database folder with configurations provided
+        /// Checks whether the conditions for working with the database are satisfied and restores missing files if necessary
         /// </summary>
-        private void CheckDataBase()
+        private void DBCondition()
         {
             if (!this.Config.IsDatabaseUse)
             {
-                Log.Warn("Database usage is disabled, players will not be able to enable effects display");
+                Log.Warn($"{nameof(DBCondition)}: DB usage is disabled by configuration.");
                 return;
             }
             else
@@ -76,12 +101,12 @@ namespace EffectDisplay
                 {
                     Directory.CreateDirectory(this.Config.PathToDataBase);
                     File.Create(file_path);
-                    Log.Warn("do not founded folder with data base creating...");
+                    Log.Warn($"{nameof(DBCondition)}: The directory with the database file is missing.");
                     return;
                 }
                 if (!File.Exists(file_path))
                 {
-                    Log.Warn("do not founded db file");
+                    Log.Warn($"{nameof(DBCondition)}: DB file is missing.");
                     File.Create(file_path);
                 }
             }
