@@ -6,8 +6,10 @@ using Exiled.API.Features;
 
 using MEC;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using UnityEngine;
 
@@ -15,7 +17,7 @@ namespace EffectDisplay.Components
 {
     public class UserEffectDisplayer: MonoBehaviour
     {
-        private MeowHintManager MeowHintManager;
+        private MeowHintManager meow;
         private Player player;
         /// <summary>
         /// Stores the current process for future stopping
@@ -54,10 +56,6 @@ namespace EffectDisplay.Components
                 Log.Debug($"{nameof(Awake)}: Starting Corountine.");
                 Timing.RunCoroutine(PlayerEffectShower());
             }
-            if (Plugin.HintServiceMeowDetected)
-            {
-                MeowHintManager = new MeowHintManager();
-            }
             else
             {
                 this.IsEnabled = false;
@@ -66,17 +64,29 @@ namespace EffectDisplay.Components
             }
         }
 
+        private void ShowMeowHint(string text)
+        {
+            if (meow != null)
+            {
+                MeowHintManager.RemoveHint(player, meow.GetHintProcessionObject());
+                meow = null;
+            }
+            meow = new MeowHintManager(text, "EffectDisplay", Plugin.Instance.Config.MeowHintSettings);
+            MeowHintManager.AddHint(player, meow.GetHintProcessionObject());
+        }
+
         private IEnumerator<float> PlayerEffectShower()
         {
-            bool showing = false;
             for (; ; )
             {
                 if (player == null)
                 {
+                    Log.Debug($"{nameof(PlayerEffectShower)}: Player is null break yield");
                     yield break;
                 }
                 if (IsEnabled == false)
                 {
+                    Log.Debug($"{nameof(PlayerEffectShower)}: IsEnabled - {IsEnabled} disabled, break yield");
                     yield break;
                 }
                 if (player.IsDead | Plugin.Instance.Config.IgnoredRoles.Contains(player.Role.Type))
@@ -86,53 +96,60 @@ namespace EffectDisplay.Components
                 }
                 if (player.ActiveEffects.Where(x => !Plugin.Instance.Config.BlackList.Contains(x.GetEffectType())).Count() == 0)
                 {
-                    MeowHintManager.RemoveHint(player, MeowHintManager.GetHintProcessionObject());
-                    showing = false;
+                    if (meow != null)
+                    {
+                        meow = null;
+                    }
                     yield return Timing.WaitForSeconds(0.1f);
                     continue;
                 }
-                if (Plugin.HintServiceMeowDetected & showing)
-                {
-                    MeowHintManager.RemoveHint(player, MeowHintManager.GetHintProcessionObject());
-                    showing = false;
-                }
                 StringBuilder InfoLine = new StringBuilder();
-                if (!Plugin.HintServiceMeowDetected)
-                {
-                    InfoLine.Append("\n\n\n\n");
-                    InfoLine.AppendLine($"<size={Plugin.Instance.Config.NativeHintSettings.FontSize}><align={Plugin.Instance.Config.NativeHintSettings.Aligment.ToLower()}>");
-                }
                 foreach (var item in player.ActiveEffects)
                 {
-                    if (Plugin.Instance.Config.BlackList.Contains(item.GetEffectType())) continue;
-                    string processingline = Plugin.Instance.Config.EffectLine[item.Classification];
-                    if (string.IsNullOrEmpty(processingline)) continue;
-                    processingline = processingline.Replace("%time%", ((int)item.TimeLeft) == 0 ? string.Empty : ((int)item.TimeLeft).ToString());
-                    processingline = processingline.Replace("%duration%", item.Duration == 0 ? "inf" : ((int)item.Duration).ToString());
-                    processingline = processingline.Replace("%effect%", Plugin.Instance.Config.GetName(item.GetEffectType()));
-                    processingline = processingline.Replace("%intensity%", item.Intensity.ToString());
-                    InfoLine.AppendLine(processingline);
+                    try
+                    {
+                        if (Plugin.Instance.Config.BlackList.Contains(item.GetEffectType())) continue;
+                        try
+                        {
+                            string processingline = Plugin.Instance.Config.EffectLine[item.Classification];
+                            if (string.IsNullOrEmpty(processingline)) continue;
+                            processingline = processingline.Replace("%time%", item.Duration == 0 ? "inf" : ((int)item.TimeLeft).ToString());
+                            processingline = processingline.Replace("%duration%", item.Duration == 0 ? "inf" : item.Duration.ToString());
+                            processingline = processingline.Replace("%effect%", Plugin.Instance.Config.GetName(item.GetEffectType()));
+                            processingline = processingline.Replace("%intensity%", item.Intensity.ToString());
+                            Log.Debug($"{nameof(PlayerEffectShower)}: Line {processingline} created");
+                            InfoLine.AppendLine(processingline);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Debug($"{nameof(PlayerEffectShower)}: Exception {e.Message}");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Debug($"{nameof(PlayerEffectShower)}: Exception {e.Message}");
+                    }
                 }
-                if (Plugin.HintServiceMeowDetected)
+                string data = InfoLine.ToString();
+                Log.Debug(data);
+                try
                 {
-                    MeowHintManager = new MeowHintManager();
-                    MeowHintManager.SetText(InfoLine.ToString());
-                    MeowHintManager.SetId("EffectDisplay");
-                    MeowHintManager.SetFont(Plugin.Instance.Config.MeowHintSettings.FontSize);
-                    MeowHintManager.SetHorizontalAligment(Plugin.Instance.Config.MeowHintSettings.Aligment);
-                    MeowHintManager.SetVerticalAligment(Plugin.Instance.Config.MeowHintSettings.VerticalAligment);
-                    MeowHintManager.SetYCoordinates(Plugin.Instance.Config.MeowHintSettings.YCoordinate);
-                    MeowHintManager.SetXCoordinate(Plugin.Instance.Config.MeowHintSettings.XCoordinate);
-                    MeowHintManager.AddHint(player, MeowHintManager.GetHintProcessionObject());
-                    showing = true;
+                    if (Plugin.HintServiceMeowDetected)
+                    {
+                        ShowMeowHint(data);
+                    }
+                    else
+                    {
+                        data = $"<size={Plugin.Instance.Config.NativeHintSettings.FontSize}><align={Plugin.Instance.Config.NativeHintSettings.Aligment}>" + data + "</size></align>";
+                        player.ShowHint(data, 1 + (player.Ping / 100)); // display a message taking into account the player's ping for a smooth update
+                    }
                 }
-                else if (!Plugin.HintServiceMeowDetected)
+                catch (Exception e)
                 {
-                    string res = InfoLine.ToString() + "</size></align>";
-                    player.ShowHint(res, (float)Plugin.Instance.Config.UpdateTime);
+                    Log.Debug($"{nameof(PlayerEffectShower)}: Exception {e.Message}");
                 }
-                Log.Debug($"Iteration {player.Nickname}: processed.");
-                yield return Timing.WaitForSeconds((float)Plugin.Instance.Config.UpdateTime);
+                Log.Debug($"{nameof(PlayerEffectShower)}: Iteration {player.Nickname}: processed.");
+                yield return Timing.WaitForSeconds(Plugin.Instance.Config.UpdateTime);
             }
         }
     }

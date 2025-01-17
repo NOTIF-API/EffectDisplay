@@ -5,7 +5,11 @@
     using System.Linq;
 
     using Exiled.Loader;
+    using EffectDisplay.Features.Sereliazer;
 
+    /// <summary>
+    /// Provides work with the service by providing hints for multi-transmissions
+    /// </summary>
     public class MeowHintManager
     {
         private static Assembly meowhints;
@@ -14,7 +18,7 @@
         private Type VerticalAligmentType;
         private object HintInstance;
         /// <summary>
-        /// Creates all the necessary types to work with HintServiceMeow
+        /// Creates an instance of a class without any default settings.
         /// </summary>
         public MeowHintManager()
         {
@@ -32,7 +36,67 @@
             if (VerticalAligmentType == null | !VerticalAligmentType.IsEnum) throw new Exception("HintVerticalAligment not found or is not Enum type");
         }
         /// <summary>
-        /// Exposes a parameter to the main Hint instance with the appropriate name
+        /// Creates an instance of a class with preset parameters that can be retrieved without extra methods
+        /// </summary>
+        /// <param name="text">Hint text</param>
+        /// <param name="fontsize">Text font size</param>
+        /// <param name="valign">Vertical aligment (Left, Center, Right)</param>
+        /// <param name="halign">Horizontal aligment (Top, Middle, Bottom)</param>
+        /// <param name="y">Y Coordinate position (0 : 1080)</param>
+        /// <param name="x">X Coordinate position (-1200 : 1200)</param>
+        /// <param name="id">Hint work id</param>
+        public MeowHintManager(string text, int fontsize = 16, string valign = "Center", string halign = "Middle", int y = 0, int x = 0, string id = "HintGeneration")
+        {
+            if (meowhints == null)
+            {
+                meowhints = Loader.Plugins.Where(xp => xp.Name == "HintServiceMeow").FirstOrDefault().Assembly;
+            }
+            if (meowhints == null) throw new Exception("Assembly HintServiceMeow not loaded in Exiled plugins");
+            Hint = meowhints.GetType("HintServiceMeow.Core.Models.Hints.Hint", false);
+            if (Hint == null) throw new Exception("Type Hint not found");
+            HintInstance = Activator.CreateInstance(Hint);
+            HorizantalAligmentType = meowhints.GetType("HintServiceMeow.Core.Enum.HintAlignment");
+            if (HorizantalAligmentType == null | !HorizantalAligmentType.IsEnum) throw new Exception("HintAligment not found or is not Enum type");
+            VerticalAligmentType = meowhints.GetType("HintServiceMeow.Core.Enum.HintVerticalAlign");
+            if (VerticalAligmentType == null | !VerticalAligmentType.IsEnum) throw new Exception("HintVerticalAligment not found or is not Enum type");
+            SetText(text);
+            SetFont(fontsize);
+            SetVerticalAligment(valign);
+            SetHorizontalAligment(halign);
+            SetId(id);
+            SetXCoordinate(x);
+            SetYCoordinates(y);
+        }
+        /// <summary>
+        /// Creates an instance of a class with predefined parameters from <see cref="MeowHintSettings"/>
+        /// </summary>
+        /// <param name="text">Hint text</param>
+        /// <param name="id">Hint work id</param>
+        /// <param name="settings">Class providing settings</param>
+        public MeowHintManager(string text, string id, MeowHintSettings settings)
+        {
+            if (meowhints == null)
+            {
+                meowhints = Loader.Plugins.Where(xp => xp.Name == "HintServiceMeow").FirstOrDefault().Assembly;
+            }
+            if (meowhints == null) throw new Exception("Assembly HintServiceMeow not loaded in Exiled plugins");
+            Hint = meowhints.GetType("HintServiceMeow.Core.Models.Hints.Hint", false);
+            if (Hint == null) throw new Exception("Type Hint not found");
+            HintInstance = Activator.CreateInstance(Hint);
+            HorizantalAligmentType = meowhints.GetType("HintServiceMeow.Core.Enum.HintAlignment");
+            if (HorizantalAligmentType == null | !HorizantalAligmentType.IsEnum) throw new Exception("HintAligment not found or is not Enum type");
+            VerticalAligmentType = meowhints.GetType("HintServiceMeow.Core.Enum.HintVerticalAlign");
+            if (VerticalAligmentType == null | !VerticalAligmentType.IsEnum) throw new Exception("HintVerticalAligment not found or is not Enum type");
+            SetText(text);
+            SetFont(settings.FontSize);
+            SetVerticalAligment(settings.VerticalAligment);
+            SetHorizontalAligment(settings.Aligment);
+            SetId(id);
+            SetXCoordinate(settings.XCoordinate);
+            SetYCoordinates(settings.YCoordinate);
+        }
+        /// <summary>
+        /// Sets the text size parameter in the working class hint
         /// </summary>
         public void SetFont(int FontSize)
         {
@@ -46,7 +110,7 @@
             }
         }
         /// <summary>
-        /// Exposes a parameter to the main Hint instance with the appropriate name
+        /// Sets the text parameter that will be displayed
         /// </summary>
         public void SetText(string Text)
         {
@@ -60,8 +124,9 @@
             }
         }
         /// <summary>
-        /// Exposes a parameter to the main Hint instance with the appropriate name
+        /// Sets horizontal alignment
         /// </summary>
+        /// <param name="aligment">Left, Center, Right</param>
         public void SetHorizontalAligment(string aligment)
         {
             try
@@ -72,9 +137,9 @@
             catch { }
         }
         /// <summary>
-        /// Exposes a parameter to the main Hint instance with the appropriate name
+        /// Sets vertical alignment
         /// </summary>
-        /// <param name="aligment"></param>
+        /// <param name="aligment">Top, Bottom, Middle</param>
         public void SetVerticalAligment(string aligment)
         {
             try
@@ -85,8 +150,9 @@
             catch { }
         }
         /// <summary>
-        /// Exposes a parameter to the main Hint instance with the appropriate name
+        /// Takes a position in relation to Y
         /// </summary>
+        /// <param name="y">0 -> 1080</param>
         public void SetYCoordinates(int y)
         {
             try
@@ -98,6 +164,10 @@
 
             }
         }
+        /// <summary>
+        /// Takes a position in relation to X
+        /// </summary>
+        /// <param name="x">-1200 -> 1200</param>
         public void SetXCoordinate(int x)
         {
             try
@@ -110,7 +180,7 @@
             }
         }
         /// <summary>
-        /// Exposes a parameter to the main Hint instance with the appropriate name
+        /// Sets a unique identifier for the displayed hint message.
         /// </summary>
         public void SetId(string id)
         {
@@ -136,6 +206,11 @@
         {
             if (HintInstance == null) return;
             HintInstance.GetType().GetProperty(name)?.SetValue(HintInstance, value, null);
+        }
+        private object GetPropertyValue(string name)
+        {
+            if (HintInstance == null) return null;
+            return HintInstance.GetType().GetProperty(name)?.GetValue(HintInstance, null);
         }
         /// <summary>
         /// uses the extension method from HintServiceMeow to add an object Hint"/>

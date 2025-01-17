@@ -23,19 +23,21 @@ namespace EffectDisplay
         [Description("will a database be used")]
         public bool IsDatabaseUse { get; set; } = true;
         [Description("the time period for which information is updated")]
-        public double UpdateTime { get; set; } = 0.9;
+        public float UpdateTime { get; set; } = 0.9f;
         [Description("these lines will be displayed for each effect type separately, allowing you to customize them")]
         public Dictionary<StatusEffectBase.EffectClassification, string> EffectLine { get; set; } = new Dictionary<StatusEffectBase.EffectClassification, string>()
         {
-            {StatusEffectBase.EffectClassification.Mixed, $"<color=\"purple\">%effect%</color> -> %time%/%duration% LVL: %intensity%" },
-            {StatusEffectBase.EffectClassification.Positive, $"<color=\"green\">%effect%</color> -> %time%/%duration% LVL: %intensity%" },
-            {StatusEffectBase.EffectClassification.Negative, $"<color=\"red\">%effect%</color> -> %time%/%duration% LVL: %intensity%" }
+            {StatusEffectBase.EffectClassification.Mixed, $"<color=purple>%effect%</color> -> %time%/%duration% LVL: %intensity%" },
+            {StatusEffectBase.EffectClassification.Positive, $"<color=green>%effect%</color> -> %time%/%duration% LVL: %intensity%" },
+            {StatusEffectBase.EffectClassification.Negative, $"<color=red>%effect%</color> -> %time%/%duration% LVL: %intensity%" },
+            {StatusEffectBase.EffectClassification.Technical, " " }
         };
         [Description("defines a list of effects that the player will not see (the effects of the technical process are hidden)")]
         public List<EffectType> BlackList { get; set; } = new List<EffectType>()
         {
             EffectType.InsufficientLighting,
-            EffectType.SoundtrackMute
+            EffectType.SoundtrackMute,
+            EffectType.FogControl
         };
         [Description("https://discord.com/channels/656673194693885975/1172647045237067788/1172647045237067788 determines the name of the effect from the existing list to the one you specify")]
         public Dictionary<EffectType, string> EffectTranslation { get; set; } = new Dictionary<EffectType, string>()
