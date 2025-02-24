@@ -14,7 +14,7 @@ effect_display:
 # will the plugin be active?
   is_enabled: true
   # will information be displayed for the developer, will help when errors are detected
-  debug: true
+  debug: false
   # will merge with other Hint service providers (for example HintServiceMeow) - if they are installed, it will switch itself
   third_party: true
   # will a database be used
@@ -23,10 +23,10 @@ effect_display:
   update_time: 0.899999976
   # these lines will be displayed for each effect type separately, allowing you to customize them
   effect_line:
-    Mixed: <color=purple>%effect%</color> - %time%/%duration% lvl %intensity%
-    Positive: <color=green>%effect%</color> - %time%/%duration% lvl %intensity%
-    Negative: <color=red>%effect%</color> - %time%/%duration% lvl %intensity%
-    Technical: ' '
+    Negative: '<color=purple>%effect%</color> -> %time%/%duration% LVL: %intensity%'
+    Mixed: '<color=green>%effect%</color> -> %time%/%duration% LVL: %intensity%'
+    Technical: '<color=red>%effect%</color> -> %time%/%duration% LVL: %intensity%'
+    Positive: ' '
   # defines a list of effects that the player will not see (the effects of the technical process are hidden)
   black_list:
   - InsufficientLighting
@@ -63,6 +63,9 @@ effect_display:
     vertical_aligment: 'Bottom'
   # What text will the user see when hovering over a question mark in the settings?
   enabled_display_description: 'Determines whether the display of enabled effects is enabled, replaces .display in the console'
+  # Will the plugin notify you of a new update
+  check_for_update: true
+
 ```
 ## How edit
 | effect_line | description |
