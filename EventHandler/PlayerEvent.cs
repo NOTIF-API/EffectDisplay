@@ -10,15 +10,21 @@ namespace EffectDisplay.EventHandler
 {
     public class PlayerEvent
     {
+        public static HeaderSetting Header { get; private set; }
         public static TwoButtonsSetting UpdateEnabler { get; private set; }
         
         public PlayerEvent()
         {
+            Header = new HeaderSetting(
+                "Effect display setting",
+                "Provides settings for Effect Display"
+                );
             UpdateEnabler = new TwoButtonsSetting(
-            1,
+            2309,
             "Effect display",
             "ON",
             "OFF",
+            header: Header,
             hintDescription: Plugin.Instance.Config.EnabledDisplayDescription,
             onChanged: OnUpdateSetting
             );

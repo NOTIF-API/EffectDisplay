@@ -60,6 +60,8 @@ namespace EffectDisplay
         public MeowHintSettings MeowHintSettings { get; set; } = new MeowHintSettings();
         [Description("What text will the user see when hovering over a question mark in the settings?")]
         public string EnabledDisplayDescription { get; set; } = "Determines whether the display of enabled effects is enabled, replaces .display in the console";
+        [Description("Will the plugin notify you of a new update")]
+        public bool CheckForUpdate { get; set; } = true;
         /// <summary>
         /// Return effect name from <see cref="EffectTranslation"/> if not found return <see cref="EffectType"/> as <see cref="string"></see>
         /// </summary>

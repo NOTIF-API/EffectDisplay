@@ -1,9 +1,8 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.6.33829.357
+VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectDisplay", "EffectDisplay\EffectDisplay.csproj", "{859B2CE7-9C9C-4CDA-B2D1-6AFAB4724063}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectDisplay", "EffectDisplay.csproj", "{7B9E9E25-73F0-5B6D-EBCF-26EAA67FC230}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +10,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{859B2CE7-9C9C-4CDA-B2D1-6AFAB4724063}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{859B2CE7-9C9C-4CDA-B2D1-6AFAB4724063}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{859B2CE7-9C9C-4CDA-B2D1-6AFAB4724063}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{859B2CE7-9C9C-4CDA-B2D1-6AFAB4724063}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B9E9E25-73F0-5B6D-EBCF-26EAA67FC230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B9E9E25-73F0-5B6D-EBCF-26EAA67FC230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B9E9E25-73F0-5B6D-EBCF-26EAA67FC230}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B9E9E25-73F0-5B6D-EBCF-26EAA67FC230}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {1622DD29-C77E-41CB-A064-E6C10C3A1D86}
+		SolutionGuid = {C1114C6A-16A4-4266-B01C-187B8BC38A81}
 	EndGlobalSection
 EndGlobal

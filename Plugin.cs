@@ -8,6 +8,7 @@ using MEC;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using UnityEngine;
 
@@ -19,7 +20,7 @@ namespace EffectDisplay
 
         public override string Name { get; } = "EffectDisplay";
 
-        public override Version Version { get; } = new Version(2, 4, 0);
+        public override Version Version { get; } = new Version(2, 5, 0);
 
         public override Version RequiredExiledVersion { get; } = new Version(9, 0, 0);
 
@@ -31,12 +32,15 @@ namespace EffectDisplay
 
         private PlayerEvent Event { get; set; }
 
+        private GithubUpdater iUpdater { get; set; }
+
         public static bool HintServiceMeowDetected { get; private set; } = false;
 
         public override void OnEnabled()
         {
             DBCondition();
             Instance = this;
+            iUpdater = new GithubUpdater("https://github.com/NOTIF-API/EffectDisplay", Version);
             // if not delayed exception called
             Timing.CallDelayed(0.5f, () => {
                 data = new DataBase();
@@ -44,10 +48,19 @@ namespace EffectDisplay
             Event = new PlayerEvent();
             SubscribeEvents();
             base.OnEnabled();
+            // for no stack when enabling
+            Task.Run(() =>
+            {
+                if (!iUpdater.IsLatest & Config.CheckForUpdate)
+                {
+                    Log.Info("New update found for EffectDisplay");
+                }
+            });
         }
 
         public override void OnDisabled()
-        { 
+        {
+            iUpdater = null;
             UnsubscribeEvents();
             data.Dispose();
             data = null;

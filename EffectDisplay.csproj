@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Costura.Fody.6.0.0\build\Costura.Fody.props" Condition="Exists('..\packages\Costura.Fody.6.0.0\build\Costura.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,6 +13,15 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <WeaverConfiguration>
+            <Costura>
+                <IncludeAssemblies>
+                    LiteDB
+                </IncludeAssemblies>
+            </Costura>
+        </WeaverConfiguration>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,6 +72,9 @@
     <Reference Include="CommandSystem.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ExMod.Exiled.9.0.1\lib\net48\CommandSystem.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Costura, Version=6.0.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Costura.Fody.6.0.0\lib\netstandard2.0\Costura.dll</HintPath>
+    </Reference>
     <Reference Include="Exiled.API, Version=9.0.1.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\ExMod.Exiled.9.0.1\lib\net48\Exiled.API.dll</HintPath>
     </Reference>
@@ -83,9 +96,9 @@
     <Reference Include="Exiled.Permissions, Version=9.0.1.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\ExMod.Exiled.9.0.1\lib\net48\Exiled.Permissions.dll</HintPath>
     </Reference>
-    <Reference Include="LiteDB, Version=5.0.16.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+    <Reference Include="LiteDB, Version=5.0.16.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LiteDB.5.0.16\lib\net45\LiteDB.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Mirror">
       <HintPath>D:\SteamLibrary\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mirror.dll</HintPath>
@@ -125,6 +138,7 @@
     <Compile Include="EventHandler\PlayerEvent.cs" />
     <Compile Include="Extensions\PlayerExtensions.cs" />
     <Compile Include="Features\DataBase.cs" />
+    <Compile Include="Features\GitHubUpdater.cs" />
     <Compile Include="Features\MeowHintManager.cs" />
     <Compile Include="Features\Sereliazer\MeowHintSettings.cs" />
     <Compile Include="Features\Sereliazer\NativeHintSettings.cs" />
@@ -137,4 +151,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Costura.Fody.6.0.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.6.0.0\build\Costura.Fody.props'))" />
+    <Error Condition="!Exists('..\packages\Costura.Fody.6.0.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.6.0.0\build\Costura.Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.6.9.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.9.1\build\Fody.targets'))" />
+  </Target>
+  <Import Project="..\packages\Costura.Fody.6.0.0\build\Costura.Fody.targets" Condition="Exists('..\packages\Costura.Fody.6.0.0\build\Costura.Fody.targets')" />
+  <Import Project="..\packages\Fody.6.9.1\build\Fody.targets" Condition="Exists('..\packages\Fody.6.9.1\build\Fody.targets')" />
 </Project>
