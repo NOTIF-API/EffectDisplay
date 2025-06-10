@@ -2,43 +2,48 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace EffectDisplay.Features
 {
     public class GithubUpdater
     {
-        private const string LatestString = "/releases/latest";
-        private string _ProjectLink { get; set; }
-        private Version CurrentVersion { get; set; }
-        public bool IsLatest { get
-            {
-                return !UpdateAvalaible();
-            } }
-        public GithubUpdater(string ProjectLink, Version MyFileVersion)
-        {
-            _ProjectLink = ProjectLink;
-            CurrentVersion = MyFileVersion;
+        public const string API_Update = "https://api.github.com/repos/{owner}/{repo}/releases/latest";
+
+        private string Owner { get; set; } = string.Empty;
+
+        private string Repository { get; set; } = string.Empty;
+
+        private Version LastDetected = new Version(0, 0, 0);
+
+        public Version Version 
+        { 
+            get 
+            { 
+                return GetLatest(); 
+            }
         }
-        public bool UpdateAvalaible()
+
+        public GithubUpdater(string owner, string repository)
         {
-            Version latest = GetUpdate().Result;
-            return (latest > CurrentVersion);
+            Owner = owner;
+            Repository = repository;
         }
-        private async Task<Version> GetUpdate()
+
+        private Version GetLatest()
         {
             using (HttpClient client = new HttpClient())
             {
                 try
                 {
-                    client.DefaultRequestHeaders.Add("User-Agent", $"C# Update finder");
-                    HttpResponseMessage response = await client.GetAsync($"{_ProjectLink}{LatestString}", HttpCompletionOption.ResponseHeadersRead);
-                    string link = response.RequestMessage?.RequestUri?.ToString();
-                    link = link.Replace(_ProjectLink, "").Replace("/releases/tag/", "").Replace("version-", "");
-                    Version LatestDetected = Version.Parse(link);
-                    return LatestDetected;
+                    HttpResponseMessage res = client.GetAsync(API_Update.Replace("{owner}", Owner).Replace("{repo}", Repository)).Result;
+                    JObject js = JObject.Parse(res.Content.ReadAsStringAsync().Result);
+                    return Version.Parse((string)js["tag_name"]);
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    return new Version(0, 0, 0);
                 }
             }
         }

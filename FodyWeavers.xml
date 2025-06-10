@@ -2,6 +2,7 @@
   <Costura>
     <IncludeAssemblies>
       LiteDB
+      Newtonsoft.Json
     </IncludeAssemblies>
   </Costura>
 </Weavers>

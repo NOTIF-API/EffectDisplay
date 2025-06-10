@@ -40,7 +40,7 @@ namespace EffectDisplay
         {
             DBCondition();
             Instance = this;
-            iUpdater = new GithubUpdater("https://github.com/NOTIF-API/EffectDisplay", Version);
+            iUpdater = new GithubUpdater("NOTIF-API", "EffectDisplay");
             // if not delayed exception called
             Timing.CallDelayed(0.5f, () => {
                 data = new DataBase();
@@ -51,10 +51,10 @@ namespace EffectDisplay
             // for no stack when enabling
             Task.Run(() =>
             {
-                if (!iUpdater.IsLatest & Config.CheckForUpdate)
-                {
-                    Log.Info("New update found for EffectDisplay");
-                }
+                Version latest = iUpdater.Version;
+                if (latest == null || latest == new Version(0, 0, 0)) return;
+                if (Version >= latest) return;
+                Log.Warn("New version of EffectDisplay plugin found");
             });
         }
 

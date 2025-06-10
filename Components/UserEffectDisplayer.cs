@@ -141,7 +141,7 @@ namespace EffectDisplay.Components
                     else
                     {
                         data = $"<size={Plugin.Instance.Config.NativeHintSettings.FontSize}><align={Plugin.Instance.Config.NativeHintSettings.Aligment}>" + data + "</size></align>";
-                        player.ShowHint(data, 1 + (player.Ping / 100)); // display a message taking into account the player's ping for a smooth update
+                        player.ShowHint(data, 1f + (float)(player.Ping / 100f)); // display a message taking into account the player's ping for a smooth update
                     }
                 }
                 catch (Exception e)
