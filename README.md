@@ -16,62 +16,72 @@ This plugin for the game SCP:SL it allows the player to know its active effects
 2. You can contact me via Discord under the name `notifapi` or `NOTIF` if you are looking for connections through servers with SCP or Exiled
 # Configs
 ```yaml
-effect_display:
 # will the plugin be active?
-  is_enabled: true
-  # will information be displayed for the developer, will help when errors are detected
-  debug: false
-  # will merge with other Hint service providers (for example HintServiceMeow) - if they are installed, it will switch itself
-  third_party: true
-  # will a database be used
-  is_database_use: true
-  # the time period for which information is updated
-  update_time: 0.899999976
-  # these lines will be displayed for each effect type separately, allowing you to customize them
-  effect_line:
-    Negative: '<color=purple>%effect%</color> -> %time%/%duration% LVL: %intensity%'
-    Mixed: '<color=green>%effect%</color> -> %time%/%duration% LVL: %intensity%'
-    Technical: ' '
-    Positive: '<color=red>%effect%</color> -> %time%/%duration% LVL: %intensity%'
-  # defines a list of effects that the player will not see (the effects of the technical process are hidden)
-  black_list:
-  - InsufficientLighting
-  - SoundtrackMute
-  - FogControl
-  # https://discord.com/channels/656673194693885975/1172647045237067788/1172647045237067788 determines the name of the effect from the existing list to the one you specify
-  effect_translation:
-    None: UnkownEffect
-  # defines the database name in the path (required at the end of .db)
-  database_name: 'data.db'
-  # folder location current database
-  path_to_data_base: 'C:\Users\User\AppData\Roaming\EXILED\Configs\EffectDisplay'
-  # List of roles for which the effects display will not be displayed (the roles of the dead are ignored without configs sets)
-  ignored_roles:
-  - None
-  - Spectator
-  # Standard settings for displaying information, used in the absence of any supported Hint providers
-  native_hint_settings:
-  # Text size
-    font_size: 12
-    # Text aligment
-    aligment: 'Left'
-  # If you use MeowHintService for Exiled then these settings will be useful for customizing the display
-  meow_hint_settings:
-  # Text size
-    font_size: 16
-    # Position Y Horizontal coordinate 0 -> 1080
-    y_coordinate: 900
-    # Position X Vertical coordinate -1200 -> 1200
-    x_coordinate: -1200
-    # Hint aligment (Left, Right, Center)
-    aligment: 'Left'
-    # Hint vertical aligment (Top, Bottom, Middle)
-    vertical_aligment: 'Bottom'
-  # What text will the user see when hovering over a question mark in the settings?
-  enabled_display_description: 'Determines whether the display of enabled effects is enabled, replaces .display in the console'
-  # Will the plugin notify you of a new update
-  check_for_update: true
-
+is_enabled: true
+# will information be displayed for the developer, will help when errors are detected
+debug: false
+# will merge with other Hint service providers (for example HintServiceMeow) - if they are installed, it will switch itself
+third_party: false
+# will a database be used
+is_database_use: true
+# the time period for which information is updated
+update_time: 0.9
+# these lines will be displayed for each effect type separately, allowing you to customize them
+effect_line:
+  Negative: '<color=red>%effect%</color> -> %time%/%duration% LVL: %intensity%'
+  Mixed: '<color=purple>%effect%</color> -> %time%/%duration% LVL: %intensity%'
+  Technical: ''
+  Positive: '<color=green>%effect%</color> -> %time%/%duration% LVL: %intensity%'
+# defines a list of effects that the player will not see (the effects of the technical process are hidden)
+black_list:
+- InsufficientLighting
+- SoundtrackMute
+- FogControl
+# https://discord.com/channels/656673194693885975/1172647045237067788/1172647045237067788 determines the name of the effect from the existing list to the one you specify
+effect_translation:
+  None: UnkownEffect
+# defines the database name in the path (required at the end of .db)
+database_name: 'data.db'
+# folder location current database
+path_to_data_base: 'C:\Users\AnyUser\AppData\Roaming\EXILED\Configs\EffectDisplay'
+# List of roles for which the effects display will not be displayed (the roles of the dead are ignored without configs sets)
+ignored_roles:
+- None
+- Spectator
+# Standard settings for displaying information, used in the absence of any supported Hint providers
+native_hint_settings:
+# Text size
+  font_size: 12
+  # Text aligment
+  aligment: 'Left'
+# If you use MeowHintService for Exiled then these settings will be useful for customizing the display
+meow_hint_settings:
+# Text size
+  font_size: 16
+  # Position Y Horizontal coordinate 0 -> 1080
+  y_coordinate: 900
+  # Position X Vertical coordinate -1200 -> 1200
+  x_coordinate: -1200
+  # Hint aligment (Left, Right, Center)
+  aligment: 'Left'
+  # Hint vertical aligment (Top, Bottom, Middle)
+  vertical_aligment: 'Bottom'
+# What text will the user see when hovering over a question mark in the settings?
+enabled_display_description: 'Determines whether the display of enabled effects is enabled, replaces .display in the console'
+# Will the plugin notify you of a new update
+check_for_update: true
+# SSS component ID for the main field item (do not duplicate with others)
+header_id: 2030
+# Display text when hovering over a question mark
+header_description: 'Provides settings for Effect Display'
+# SSS component ID for the TwoButton (do not duplicate with others)
+two_button_id: 2031
+# Name of TwoButton field
+two_button_label: 'Time effect display'
+# First option name
+two_button_enabled: 'ON'
+# Second option name
+two_button_disabled: 'OFF'
 ```
 ## How edit
 | effect_line | description |
