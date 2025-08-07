@@ -62,6 +62,18 @@ namespace EffectDisplay
         public string EnabledDisplayDescription { get; set; } = "Determines whether the display of enabled effects is enabled, replaces .display in the console";
         [Description("Will the plugin notify you of a new update")]
         public bool CheckForUpdate { get; set; } = true;
+        [Description("SSS component ID for the main field item (do not duplicate with others)")]
+        public int HeaderId { get; set; } = 2030;
+        [Description("Display text when hovering over a question mark")]
+        public string HeaderDescription { get; set; } = "Provides settings for Effect Display";
+        [Description("SSS component ID for the TwoButton (do not duplicate with others)")]
+        public int TwoButtonId { get; set; } = 2031;
+        [Description("Name of TwoButton field")]
+        public string TwoButtonLabel { get; set; } = "Time effect display";
+        [Description("First option name")]
+        public string TwoButtonEnabled { get; set; } = "ON";
+        [Description("Second option name")]
+        public string TwoButtonDisabled { get; set; } = "OFF";
         /// <summary>
         /// Return effect name from <see cref="EffectTranslation"/> if not found return <see cref="EffectType"/> as <see cref="string"></see>
         /// </summary>

@@ -15,17 +15,20 @@ namespace EffectDisplay.EventHandler
         
         public PlayerEvent()
         {
-            Header = new HeaderSetting(
+            Configs cfg = Plugin.Instance.Config;
+            Header = new HeaderSetting
+                (
+                cfg.HeaderId,
                 "Effect display setting",
-                "Provides settings for Effect Display"
+                cfg.HeaderDescription
                 );
             UpdateEnabler = new TwoButtonsSetting(
-            2309,
-            "Effect display",
-            "ON",
-            "OFF",
+            cfg.TwoButtonId,
+            cfg.TwoButtonLabel,
+            cfg.TwoButtonEnabled,
+            cfg.TwoButtonDisabled,
             header: Header,
-            hintDescription: Plugin.Instance.Config.EnabledDisplayDescription,
+            hintDescription: cfg.EnabledDisplayDescription,
             onChanged: OnUpdateSetting
             );
             SettingBase.Register(new[] { UpdateEnabler });
@@ -40,10 +43,10 @@ namespace EffectDisplay.EventHandler
 
         private void OnUpdateSetting(Player player, SettingBase twr)
         {
-            if (twr.Id != UpdateEnabler.Id) return;
-            else
+            if (player == null || twr == null) return;
+            if (twr is TwoButtonsSetting tbs)
             {
-                bool chose = (twr as TwoButtonsSetting).IsFirst;
+                bool chose = tbs.IsFirst;
                 Plugin.data.IsAllow(player.UserId, chose);
                 player.GameObject.GetComponent<UserEffectDisplayer>().IsEnabled = chose;
             }

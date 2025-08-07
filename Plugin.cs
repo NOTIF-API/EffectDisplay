@@ -16,11 +16,11 @@ namespace EffectDisplay
 {
     public class Plugin : Plugin<Configs>
     {
-        public override string Author { get; } = "notif";
+        public override string Author { get; } = "notifapi";
 
         public override string Name { get; } = "EffectDisplay";
 
-        public override Version Version { get; } = new Version(2, 5, 0);
+        public override Version Version { get; } = new Version(2, 6, 0);
 
         public override Version RequiredExiledVersion { get; } = new Version(9, 0, 0);
 
@@ -88,6 +88,7 @@ namespace EffectDisplay
                 {
                     HintServiceMeowDetected = true;
                     Log.Info($"{nameof(OnWaitingForPlayers)}: A third-party provider has been detected. The Hint plugin will be adjusted to work with it automatically.");
+                    Log.Info($"{nameof(OnWaitingForPlayers)}: When testing finded bug with broken chars displaying.");
                 }
             }
         }
