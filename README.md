@@ -23,7 +23,7 @@ debug: false
 # will merge with other Hint service providers (for example HintServiceMeow) - if they are installed, it will switch itself
 third_party: false
 # will a database be used
-is_database_use: true
+data_base_enabled: true
 # the time period for which information is updated
 update_time: 0.9
 # these lines will be displayed for each effect type separately, allowing you to customize them
