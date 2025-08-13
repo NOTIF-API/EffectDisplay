@@ -19,7 +19,7 @@ namespace EffectDisplay.commands
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             Player ply = Player.Get(sender);
-            if ( !Plugin.Instance.Config.IsDatabaseUse )
+            if ( !Plugin.Instance.Config.DataBaseEnabled )
             {
                 response = "The specified server does not have this function.";
                 return false;

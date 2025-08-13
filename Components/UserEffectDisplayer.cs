@@ -1,5 +1,4 @@
 ﻿using EffectDisplay.Extensions;
-using EffectDisplay.Features;
 
 using Exiled.API.Extensions;
 using Exiled.API.Features;
@@ -17,7 +16,6 @@ namespace EffectDisplay.Components
 {
     public class UserEffectDisplayer: MonoBehaviour
     {
-        private MeowHintManager meow;
         private Player player;
         /// <summary>
         /// Stores the current process for future stopping
@@ -64,19 +62,9 @@ namespace EffectDisplay.Components
             }
         }
 
-        private void ShowMeowHint(string text)
-        {
-            if (meow != null)
-            {
-                MeowHintManager.RemoveHint(player, meow.GetHintProcessionObject());
-                meow = null;
-            }
-            meow = new MeowHintManager(text, "EffectDisplay", Plugin.Instance.Config.MeowHintSettings);
-            MeowHintManager.AddHint(player, meow.GetHintProcessionObject());
-        }
-
         private IEnumerator<float> PlayerEffectShower()
         {
+            Configs cfg = Plugin.Instance.Config;
             for (; ; )
             {
                 if (player == null)
@@ -96,10 +84,6 @@ namespace EffectDisplay.Components
                 }
                 if (player.ActiveEffects.Where(x => !Plugin.Instance.Config.BlackList.Contains(x.GetEffectType())).Count() == 0)
                 {
-                    if (meow != null)
-                    {
-                        meow = null;
-                    }
                     yield return Timing.WaitForSeconds(0.1f);
                     continue;
                 }
@@ -111,11 +95,11 @@ namespace EffectDisplay.Components
                         if (Plugin.Instance.Config.BlackList.Contains(item.GetEffectType())) continue;
                         try
                         {
-                            string processingline = Plugin.Instance.Config.EffectLine[item.Classification];
-                            if (string.IsNullOrEmpty(processingline)) continue;
-                            processingline = processingline.Replace("%time%", item.Duration == 0 ? "inf" : ((int)item.TimeLeft).ToString());
-                            processingline = processingline.Replace("%duration%", item.Duration == 0 ? "inf" : item.Duration.ToString());
-                            processingline = processingline.Replace("%effect%", Plugin.Instance.Config.GetName(item.GetEffectType()));
+                            string processingline = cfg.EffectLine[item.Classification];
+                            if (string.IsNullOrWhiteSpace(processingline)) continue;
+                            processingline = processingline.Replace("%time%", (int)item.Duration == 0 ? "inf" : ((int)item.TimeLeft).ToString());
+                            processingline = processingline.Replace("%duration%", (int)item.Duration == 0 ? "inf" : item.Duration.ToString());
+                            processingline = processingline.Replace("%effect%", cfg.GetName(item.GetEffectType()));
                             processingline = processingline.Replace("%intensity%", item.Intensity.ToString());
                             Log.Debug($"{nameof(PlayerEffectShower)}: Line {processingline} created");
                             InfoLine.AppendLine(processingline);
@@ -134,22 +118,15 @@ namespace EffectDisplay.Components
                 Log.Debug(data);
                 try
                 {
-                    if (Plugin.HintServiceMeowDetected)
-                    {
-                        ShowMeowHint(data);
-                    }
-                    else
-                    {
-                        data = $"<size={Plugin.Instance.Config.NativeHintSettings.FontSize}><align={Plugin.Instance.Config.NativeHintSettings.Aligment}>" + data + "</size></align>";
-                        player.ShowHint(data, 1f + (float)(player.Ping / 100f)); // display a message taking into account the player's ping for a smooth update
-                    }
+                    data = $"<size={cfg.NativeHintSettings.FontSize}><align={cfg.NativeHintSettings.Aligment}>" + data + "</size></align>";
+                    player.ShowHint(data, 1f + (float)(player.Ping / 100f)); // display a message taking into account the player's ping for a smooth update
                 }
                 catch (Exception e)
                 {
                     Log.Debug($"{nameof(PlayerEffectShower)}: Exception {e.Message}");
                 }
                 Log.Debug($"{nameof(PlayerEffectShower)}: Iteration {player.Nickname}: processed.");
-                yield return Timing.WaitForSeconds(Plugin.Instance.Config.UpdateTime);
+                yield return Timing.WaitForSeconds(cfg.UpdateTime);
             }
         }
     }

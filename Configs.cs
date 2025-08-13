@@ -21,7 +21,7 @@ namespace EffectDisplay
         [Description("will merge with other Hint service providers (for example HintServiceMeow) - if they are installed, it will switch itself")]
         public bool ThirdParty { get; set; } = true;
         [Description("will a database be used")]
-        public bool IsDatabaseUse { get; set; } = true;
+        public bool DataBaseEnabled { get; set; } = true;
         [Description("the time period for which information is updated")]
         public float UpdateTime { get; set; } = 0.9f;
         [Description("these lines will be displayed for each effect type separately, allowing you to customize them")]
@@ -56,8 +56,6 @@ namespace EffectDisplay
         };
         [Description("Standard settings for displaying information, used in the absence of any supported Hint providers")]
         public NativeHintSettings NativeHintSettings { get; set; } = new NativeHintSettings();
-        [Description("If you use MeowHintService for Exiled then these settings will be useful for customizing the display")]
-        public MeowHintSettings MeowHintSettings { get; set; } = new MeowHintSettings();
         [Description("What text will the user see when hovering over a question mark in the settings?")]
         public string EnabledDisplayDescription { get; set; } = "Determines whether the display of enabled effects is enabled, replaces .display in the console";
         [Description("Will the plugin notify you of a new update")]
@@ -79,7 +77,12 @@ namespace EffectDisplay
         /// </summary>
         public string GetName(EffectType effectType)
         {
-            return EffectTranslation.ContainsKey(effectType) ? EffectTranslation[effectType] : effectType.ToString();
+            string name = string.Empty;
+            if (EffectTranslation.TryGetValue(effectType, out name))
+            {
+                return name;
+            }
+            return effectType.ToString();
         }
     }
 }

@@ -1,16 +1,10 @@
 ﻿using EffectDisplay.EventHandler;
 using EffectDisplay.Features;
 using Exiled.API.Features;
-using Exiled.API.Features.Core.UserSettings;
-using Exiled.Loader;
 
-using MEC;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-
-using UnityEngine;
 
 namespace EffectDisplay
 {
@@ -20,7 +14,7 @@ namespace EffectDisplay
 
         public override string Name { get; } = "EffectDisplay";
 
-        public override Version Version { get; } = new Version(2, 6, 0);
+        public override Version Version { get; } = new Version(2, 8, 0);
 
         public override Version RequiredExiledVersion { get; } = new Version(9, 0, 0);
 
@@ -41,23 +35,20 @@ namespace EffectDisplay
             DBCondition();
             Instance = this;
             iUpdater = new GithubUpdater("NOTIF-API", "EffectDisplay");
-            // if not delayed exception called
-            Timing.CallDelayed(0.5f, () => {
-                data = new DataBase();
-            });
+            data = new DataBase();
             Event = new PlayerEvent();
             SubscribeEvents();
             base.OnEnabled();
-            // for no stack when enabling
+            // Background update task.
             Task.Run(() =>
             {
                 Version latest = iUpdater.Version;
                 if (latest == null || latest == new Version(0, 0, 0)) return;
+                Log.Debug($"Current version: [{this.Version.ToString()}] latest version detected is {latest.ToString()}");
                 if (Version >= latest) return;
                 Log.Warn("New version of EffectDisplay plugin found");
             });
         }
-
         public override void OnDisabled()
         {
             iUpdater = null;
@@ -74,39 +65,21 @@ namespace EffectDisplay
         {
             Log.Debug($"{nameof(SubscribeEvents)}: Subscribe to the event.");
             Exiled.Events.Handlers.Player.Verified += Event.OnVerefied;
-            Exiled.Events.Handlers.Server.WaitingForPlayers += OnWaitingForPlayers;
-        }
-        /// <summary>
-        /// needed to check the presence of third-party plugins after they are fully loaded.
-        /// Also to notify about new updates.
-        /// </summary>
-        private void OnWaitingForPlayers()
-        {
-            if (Config.ThirdParty)
-            {
-                if (Loader.Plugins.Where(x => x.Name == "HintServiceMeow").FirstOrDefault() != null)
-                {
-                    HintServiceMeowDetected = true;
-                    Log.Info($"{nameof(OnWaitingForPlayers)}: A third-party provider has been detected. The Hint plugin will be adjusted to work with it automatically.");
-                    Log.Info($"{nameof(OnWaitingForPlayers)}: When testing finded bug with broken chars displaying.");
-                }
-            }
         }
 
         protected void UnsubscribeEvents()
         {
             Log.Debug($"{nameof(UnsubscribeEvents)}: Unsubscribe from events.");
             Exiled.Events.Handlers.Player.Verified -= Event.OnVerefied;
-            Exiled.Events.Handlers.Server.WaitingForPlayers -= OnWaitingForPlayers;
         }
         /// <summary>
         /// Checks whether the conditions for working with the database are satisfied and restores missing files if necessary
         /// </summary>
         private void DBCondition()
         {
-            if (!this.Config.IsDatabaseUse)
+            if (!this.Config.DataBaseEnabled)
             {
-                Log.Warn($"{nameof(DBCondition)}: DB usage is disabled by configuration.");
+                Log.Warn($"{nameof(DBCondition)}: Database usage has been disabled in the plugin configuration!");
                 return;
             }
             else
@@ -115,15 +88,15 @@ namespace EffectDisplay
                 // if folder do not detected creating it with file
                 if (!Directory.Exists(this.Config.PathToDataBase))
                 {
+                    Log.Warn($"{nameof(DBCondition)}: The directory with the database from EffectDisplay was not found, we are creating a directory and a file.");
                     Directory.CreateDirectory(this.Config.PathToDataBase);
-                    File.Create(file_path);
-                    Log.Warn($"{nameof(DBCondition)}: The directory with the database file is missing.");
+                    File.Create(file_path).Close();
                     return;
                 }
                 if (!File.Exists(file_path))
                 {
-                    Log.Warn($"{nameof(DBCondition)}: DB file is missing.");
-                    File.Create(file_path);
+                    Log.Warn($"{nameof(DBCondition)}: The database file was not found.");
+                    File.Create(file_path).Close();
                 }
             }
         }
