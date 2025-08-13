@@ -2,18 +2,18 @@
 [![Sponsor on Patreon](https://img.shields.io/badge/sponsor-patreon-orange.svg)](https://www.patreon.com/NOTIF247)
 [![Download letest version](https://img.shields.io/badge/download-latest-red.svg)](https://github.com/NOTIF-API/EffectDisplay/releases)
 
-This plugin for the game SCP:SL it allows the player to know its active effects
+This plugin for the game SCP:SL it allows the player to know its active effects.
 # how to use plugin for server or client
-1. **Client and display of information**
+1. **Client and display of information**.
    - Use the `.display` command in the game console to toggle the display of information on the player's screen.
    - You can also use the SSS(Server Specifiq Settings) function to turn on or off the display of active effects.
-2. **Using the database and its features**
-   - In the `path_to_data_base` configuration, a path is automatically created and further work is carried out along it. You can specify the path to existing data, but for convenience I would use `separate file` to avoid competition
-   - The `is_database_use` configuration determines whether the plugin will use databases to store user selections. If the position is `false`, the user will not be able to turn off the display if desired. What will ensure stable display of active effects to all players without taking into account their wishes
+2. **Using the database and its features**.
+   - In the `path_to_data_base` configuration, a path is automatically created and further work is carried out along it. You can specify the path to existing data, but for convenience I would use `separate file` to avoid competition.
+   - The `is_database_use` configuration determines whether the plugin will use databases to store user selections. If the position is `false`, the user will not be able to turn off the display if desired. What will ensure stable display of active effects to all players without taking into account their wishes.
 # What to do when errors are detected
-**If you suddenly find an error or a flaw that needs to be corrected. If you see that the plugin is missing something, you can submit a suggestion about what could be added.**
-1. You can contact me via [![Issues](https://img.shields.io/badge/problems-issues-red.svg)](https://github.com/NOTIF-API/EffectDisplay/issues)
-2. You can contact me via Discord under the name `notifapi` or `NOTIF` if you are looking for connections through servers with SCP or Exiled
+**If you suddenly find an error or a flaw that needs to be corrected. If you see that the plugin is missing something, you can submit a suggestion about what could be added**.
+1. You can contact me via [Issues](https://github.com/NOTIF-API/EffectDisplay/issues).
+2. You can contact me via Discord under the name `notifapi` or `NOTIF` if you are looking for connections through servers with SCP or Exiled.
 # Configs
 ```yaml
 # will the plugin be active?
