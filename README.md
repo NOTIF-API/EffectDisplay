@@ -20,18 +20,16 @@ This plugin for the game SCP:SL it allows the player to know its active effects.
 is_enabled: true
 # will information be displayed for the developer, will help when errors are detected
 debug: false
-# will merge with other Hint service providers (for example HintServiceMeow) - if they are installed, it will switch itself
-third_party: false
 # will a database be used
 data_base_enabled: true
 # the time period for which information is updated
 update_time: 0.9
 # these lines will be displayed for each effect type separately, allowing you to customize them
 effect_line:
-  Negative: '<color=red>%effect%</color> -> %time%/%duration% LVL: %intensity%'
   Mixed: '<color=purple>%effect%</color> -> %time%/%duration% LVL: %intensity%'
-  Technical: ''
   Positive: '<color=green>%effect%</color> -> %time%/%duration% LVL: %intensity%'
+  Negative: '<color=red>%effect%</color> -> %time%/%duration% LVL: %intensity%'
+  Technical: ' '
 # defines a list of effects that the player will not see (the effects of the technical process are hidden)
 black_list:
 - InsufficientLighting
@@ -43,7 +41,7 @@ effect_translation:
 # defines the database name in the path (required at the end of .db)
 database_name: 'data.db'
 # folder location current database
-path_to_data_base: 'C:\Users\AnyUser\AppData\Roaming\EXILED\Configs\EffectDisplay'
+path_to_data_base: 'C:\Users\User\AppData\Roaming\EXILED\Configs\EffectDisplay'
 # List of roles for which the effects display will not be displayed (the roles of the dead are ignored without configs sets)
 ignored_roles:
 - None
@@ -54,18 +52,6 @@ native_hint_settings:
   font_size: 12
   # Text aligment
   aligment: 'Left'
-# If you use MeowHintService for Exiled then these settings will be useful for customizing the display
-meow_hint_settings:
-# Text size
-  font_size: 16
-  # Position Y Horizontal coordinate 0 -> 1080
-  y_coordinate: 900
-  # Position X Vertical coordinate -1200 -> 1200
-  x_coordinate: -1200
-  # Hint aligment (Left, Right, Center)
-  aligment: 'Left'
-  # Hint vertical aligment (Top, Bottom, Middle)
-  vertical_aligment: 'Bottom'
 # What text will the user see when hovering over a question mark in the settings?
 enabled_display_description: 'Determines whether the display of enabled effects is enabled, replaces .display in the console'
 # Will the plugin notify you of a new update
@@ -82,6 +68,14 @@ two_button_label: 'Time effect display'
 two_button_enabled: 'ON'
 # Second option name
 two_button_disabled: 'OFF'
+# The player sees this message if you have disabled the database or the file was not found, meaning it is not allowed to be used.
+message_wnen_data_base_disabled: 'The specified server does not have this function.'
+# The player sees this message when turning on the display component.
+message_when_player_enabled: 'You have <b>enabled</b> the display of active effects.'
+# The player sees this message when turning off the display component.
+message_when_player_disabled: 'You have <b>disabled</b> the display of active effects.'
+# The player sees this message when the server was unable to find the player component or the player himself (for example, a call from the Dedicated Server)
+message_when_error_occurred: 'The player''s effects display component was not found, or the player himself was not found.'
 ```
 ## How edit
 | effect_line | description |
