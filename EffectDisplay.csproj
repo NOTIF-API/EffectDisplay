@@ -53,7 +53,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>TRACE;Meow</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
@@ -80,6 +80,24 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Meow|x64'">
     <OutputPath>bin\Meow\</OutputPath>
     <DefineConstants>TRACE;DEBUG;Meow</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RueiBild|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\RueiBild\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RueiBild|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\RueiBild\</OutputPath>
+    <DefineConstants>TRACE;Ruie</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -158,7 +176,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="commands\display.cs" />
-    <Compile Include="commands\test.cs" />
     <Compile Include="Components\UserEffectDisplayer.cs" />
     <Compile Include="Configs.cs" />
     <Compile Include="EventHandler\PlayerEvent.cs" />

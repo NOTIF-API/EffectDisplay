@@ -26,32 +26,41 @@ namespace EffectDisplay
 
         private PlayerEvent Event { get; set; }
 
-        private GithubUpdater iUpdater { get; set; }
-
         public static bool HintServiceMeowDetected { get; private set; } = false;
 
         public override void OnEnabled()
         {
             DBCondition();
             Instance = this;
-            iUpdater = new GithubUpdater("NOTIF-API", "EffectDisplay");
             data = new DataBase();
             Event = new PlayerEvent();
             SubscribeEvents();
             base.OnEnabled();
-            // Background update task.
-            Task.Run(() =>
+            // Background update check task.
+            if (Config.CheckForUpdate)
             {
-                Version latest = iUpdater.Version;
-                if (latest == null || latest == new Version(0, 0, 0)) return;
-                Log.Debug($"Current version: [{this.Version.ToString()}] latest version detected is {latest.ToString()}");
-                if (Version >= latest) return;
-                Log.Warn("New version of EffectDisplay plugin found");
-            });
+                
+                Task.Run(async () =>
+                {
+                    Version ver = await GithubUpdater.GetLatestAsync("NOTIF-API", "EffectDisplay");
+                    if (ver == null || ver == new Version(0, 0, 0))
+                    {
+                        Log.Debug($"{nameof(OnEnabled)}[Task]: Failed to check for updates.");
+                        return;
+                    }
+                    else
+                    {
+                        if (Version < ver)
+                        {
+                            Log.Warn($"A new version of the plugin is available: {ver}. You are using version {Version}. Download it from\nhttps://github.com/NOTIF-API/EffectDisplay/releases/latest");
+                            return;
+                        }
+                    }
+                });
+            }
         }
         public override void OnDisabled()
         {
-            iUpdater = null;
             UnsubscribeEvents();
             data.Dispose();
             data = null;
@@ -85,6 +94,8 @@ namespace EffectDisplay
             else
             {
                 string file_path = Path.Combine(this.Config.PathToDataBase, this.Config.DatabaseName);
+                string extension = Path.GetExtension(file_path);
+                if (extension != ".db") file_path.Replace(extension, ".db");
                 // if folder do not detected creating it with file
                 if (!Directory.Exists(this.Config.PathToDataBase))
                 {

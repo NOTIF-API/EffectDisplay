@@ -7,6 +7,16 @@ namespace EffectDisplay.Features
 {
     public class DataBase: IDisposable
     {
+        /// <summary>
+        /// Makes it easier to understand the existence of a database and its enabled state
+        /// </summary>
+        public static bool IsInitializedAndEnabled { get
+            {
+                bool? d =Plugin.Instance?.Config.DataBaseEnabled;
+                return Plugin.data != null && d.HasValue ? d.Value : false;
+            }
+        }
+
         private string Path;
 
         private LiteDatabase db;

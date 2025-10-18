@@ -18,8 +18,6 @@ namespace EffectDisplay
         public bool IsEnabled { get; set; } = true;
         [Description("will information be displayed for the developer, will help when errors are detected")]
         public bool Debug { get; set; } = false;
-        [Description("will merge with other Hint service providers (for example HintServiceMeow) - if they are installed, it will switch itself")]
-        public bool ThirdParty { get; set; } = true;
         [Description("will a database be used")]
         public bool DataBaseEnabled { get; set; } = true;
         [Description("the time period for which information is updated")]
@@ -72,6 +70,14 @@ namespace EffectDisplay
         public string TwoButtonEnabled { get; set; } = "ON";
         [Description("Second option name")]
         public string TwoButtonDisabled { get; set; } = "OFF";
+        [Description("The player sees this message if you have disabled the database or the file was not found, meaning it is not allowed to be used.")]
+        public string MessageWnenDataBaseDisabled { get; set; } = "The specified server does not have this function.";
+        [Description("The player sees this message when turning on the display component.")]
+        public string MessageWhenPlayerEnabled { get; set; } = "You have <b>enabled</b> the display of active effects.";
+        [Description("The player sees this message when turning off the display component.")]
+        public string MessageWhenPlayerDisabled { get; set; } = "You have <b>disabled</b> the display of active effects.";
+        [Description("The player sees this message when the server was unable to find the player component or the player himself (for example, a call from the Dedicated Server)")]
+        public string MessageWhenErrorOccurred { get; set; } = "The player's effects display component was not found, or the player himself was not found.";
         /// <summary>
         /// Return effect name from <see cref="EffectTranslation"/> if not found return <see cref="EffectType"/> as <see cref="string"></see>
         /// </summary>

@@ -1,40 +1,47 @@
 ﻿using CommandSystem;
 using EffectDisplay.Components;
+using EffectDisplay.Features;
+
 using Exiled.API.Features;
 using System;
 
 namespace EffectDisplay.commands
 {
     [CommandHandler(typeof(ClientCommandHandler))]
+    [CommandHandler(typeof(RemoteAdminCommandHandler))]
     public class display : ICommand
     {
         public string Command { get; set; } = "display";
 
         public string[] Aliases { get; set; } = Array.Empty<string>();
 
-        public bool SanitizeResponse => true;
-
         public string Description { get; set; } = "The command automatically switches the display mode of active effects.";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             Player ply = Player.Get(sender);
-            if ( !Plugin.Instance.Config.DataBaseEnabled )
+            UserEffectDisplayer c = ply.GameObject.GetComponent<UserEffectDisplayer>();
+            if (ply == null || c == null)
             {
-                response = "The specified server does not have this function.";
+                response = Plugin.Instance.Config.MessageWhenErrorOccurred;
+                return false;
+            }
+            if (!DataBase.IsInitializedAndEnabled)
+            {
+                response = Plugin.Instance.Config.MessageWnenDataBaseDisabled;
                 return false;
             }
             bool flag = !Plugin.data.IsAllow(ply.UserId);
             Plugin.data.IsAllow(ply.UserId, flag);
-            ply.GameObject.GetComponent<UserEffectDisplayer>().IsEnabled = flag;
+            c.IsEnabled = flag;
             if (flag)
             {
-                response = "The command was completed successfully.\nDisplay of active effects will be enabled for you.";
+                response = Plugin.Instance.Config.MessageWhenPlayerEnabled;
                 return true;
             }
             else
             {
-                response = "The command was completed successfully.\nDisplay of active effects will be disabled for you.";
+                response = Plugin.Instance.Config.MessageWhenPlayerDisabled;
                 return true;
             }
         }
