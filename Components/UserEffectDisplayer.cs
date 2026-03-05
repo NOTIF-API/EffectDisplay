@@ -1,4 +1,5 @@
-﻿using EffectDisplay.Extensions;
+﻿using EffectDisplay.Features;
+using EffectDisplay.Features.Sereliazer;
 
 using Exiled.API.Extensions;
 using Exiled.API.Features;
@@ -13,7 +14,7 @@ using UnityEngine;
 
 namespace EffectDisplay.Components
 {
-    public class UserEffectDisplayer: MonoBehaviour
+    public class UserEffectDisplayer : MonoBehaviour
     {
         private Player player;
         /// <summary>
@@ -33,15 +34,14 @@ namespace EffectDisplay.Components
             }
             set
             {
-                Log.Debug($"{nameof(IsEnabled)}.Set: {Enabled} -> {value}.");
                 Enabled = value;
                 if (value == false) Timing.KillCoroutines(Current);
                 else Current = Timing.RunCoroutine(PlayerEffectShower());
             }
         }
 
-        public Configs cfg 
-        { 
+        public Configs cfg
+        {
             get
             {
                 return Plugin.Instance.Config ?? new Configs();
@@ -50,11 +50,17 @@ namespace EffectDisplay.Components
 
         private void Awake()
         {
-            Log.Debug($"{nameof(Awake)}: Initing component.");
+            Log.Debug($"[Awake] Initing component.");
             player = Player.Get(gameObject);
-            Log.Debug($"{nameof(Awake)}: {player.Nickname} Awake and adding component handling.");
-            if (player.GetIsAllow()) Current = Timing.RunCoroutine(PlayerEffectShower());
-            else Destroy(this);
+            Log.Debug($"[Awake] {player.Nickname} Awake and adding component handling.");
+            if (!DataBase.TryGetData(player.UserId, out User user))
+            {
+                Current = Timing.RunCoroutine(PlayerEffectShower());
+            }
+            else
+            {
+                if (user.IsAllow) Current = Timing.RunCoroutine(PlayerEffectShower());
+            }
         }
 
         private string GenerateString(CustomPlayerEffects.StatusEffectBase effect)
@@ -75,7 +81,7 @@ namespace EffectDisplay.Components
             {
                 if (player == null || IsEnabled == false)
                 {
-                    Log.Debug($"{nameof(PlayerEffectShower)}: Player is null or component is disabled, break yield");
+                    Log.Debug($"[PlayerEffectShower] Player is null or component is disabled, break yield");
                     yield break;
                 }
                 if (player.IsDead || Plugin.Instance.Config.IgnoredRoles.Contains(player.Role.Type))
@@ -101,7 +107,7 @@ namespace EffectDisplay.Components
                     }
                     catch (Exception e)
                     {
-                        Log.Debug($"{nameof(PlayerEffectShower)}: Exception {e.Message}");
+                        Log.Debug($"[PlayerEffectShower] Exception {e.Message}");
                     }
                 }
 
@@ -110,8 +116,8 @@ namespace EffectDisplay.Components
 
                 data = $"<size={cfg.NativeHintSettings.FontSize}><align={cfg.NativeHintSettings.Aligment}>" + data + "</size></align>";
                 player?.ShowHint(data, 1f + (float)(player.Ping / 100f)); // display a message taking into account the player's ping for a smooth update
-                
-                Log.Debug($"{nameof(PlayerEffectShower)}: Iteration {player.Nickname}: processed.");
+
+                Log.Debug($"[PlayerEffectShower] Iteration {player.Nickname}: processed.");
                 yield return Timing.WaitForSeconds(cfg.UpdateTime);
             }
         }

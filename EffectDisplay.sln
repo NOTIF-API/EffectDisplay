@@ -7,11 +7,14 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		HintMeow|Any CPU = HintMeow|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{859B2CE7-9C9C-4CDA-B2D1-6AFAB4724063}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{859B2CE7-9C9C-4CDA-B2D1-6AFAB4724063}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{859B2CE7-9C9C-4CDA-B2D1-6AFAB4724063}.HintMeow|Any CPU.ActiveCfg = HintMeow|x64
+		{859B2CE7-9C9C-4CDA-B2D1-6AFAB4724063}.HintMeow|Any CPU.Build.0 = HintMeow|x64
 		{859B2CE7-9C9C-4CDA-B2D1-6AFAB4724063}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{859B2CE7-9C9C-4CDA-B2D1-6AFAB4724063}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные со сборкой.
 [assembly: AssemblyTitle("EffectDisplay")]
-[assembly: AssemblyDescription("Show active player effect")]
+[assembly: AssemblyDescription("Plugin for SCP:SL working on EXILED allow for players see active effects")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("notifapi")]
 [assembly: AssemblyProduct("EffectDisplay")]
-[assembly: AssemblyCopyright("Copyright © notifapi 2023")]
+[assembly: AssemblyCopyright("Copyright © notifapi 2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номера сборки и редакции по умолчанию 
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.8.0.0")]
-[assembly: AssemblyFileVersion("2.8.0.0")]
+[assembly: AssemblyVersion("2.9.0.0")]
+[assembly: AssemblyFileVersion("2.9.0.0")]

@@ -12,7 +12,7 @@ using System.IO;
 
 namespace EffectDisplay
 {
-    public class Configs: IConfig
+    public class Configs : IConfig
     {
         [Description("will the plugin be active?")]
         public bool IsEnabled { get; set; } = true;
@@ -42,10 +42,8 @@ namespace EffectDisplay
         {
             { EffectType.None, "UnkownEffect" }
         };
-        [Description("defines the database name in the path (required at the end of .db)")]
-        public string DatabaseName { get; set; } = "data.db";
-        [Description("folder location current database")]
-        public string PathToDataBase { get; set; } = Path.Combine(Paths.Configs, "EffectDisplay");
+        [Description("Full path to data base")]
+        public string DataPath { get; set; } = Path.Combine(Paths.Configs, "EffectDisplay", "data.db");
         [Description("List of roles for which the effects display will not be displayed (the roles of the dead are ignored without configs sets)")]
         public List<RoleTypeId> IgnoredRoles { get; set; } = new List<RoleTypeId>()
         {
