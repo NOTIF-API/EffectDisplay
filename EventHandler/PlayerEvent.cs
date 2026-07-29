@@ -17,7 +17,7 @@ namespace EffectDisplay.EventHandler
             if (e.Player == null) return;
             Log.Debug(e.Player);
             e.Player.GameObject.AddComponent<UserEffectDisplayer>();
-            Log.Debug($"{nameof(OnVerefied)}: Added {nameof(UserEffectDisplayer)} components.");
+            Log.Debug("[OnVerefied]: Added UserEffectDisplayer components.");
         }
     }
 }

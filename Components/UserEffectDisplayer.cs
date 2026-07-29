@@ -67,10 +67,11 @@ namespace EffectDisplay.Components
         {
             string processingline = cfg.EffectLine[effect.Classification];
             if (string.IsNullOrWhiteSpace(processingline)) return string.Empty;
-            processingline = processingline.Replace("%time%", (int)effect.Duration == 0 ? "inf" : ((int)effect.TimeLeft).ToString());
-            processingline = processingline.Replace("%duration%", (int)effect.Duration == 0 ? "inf" : effect.Duration.ToString());
-            processingline = processingline.Replace("%effect%", cfg.GetName(effect.GetEffectType()));
-            processingline = processingline.Replace("%intensity%", effect.Intensity.ToString());
+            processingline = processingline
+                .Replace("%time%", (int)effect.Duration == 0 ? "inf" : $"{effect.TimeLeft:F1}")
+                .Replace("%duration%", effect.Duration <= 0.1f ? "inf" : $"{effect.Duration:F0}")
+                .Replace("%effect%", cfg.GetName(effect.GetEffectType()))
+                .Replace("%intensity%", effect.Intensity.ToString());
             Log.Debug($"{nameof(PlayerEffectShower)}: Line {processingline} created");
             return processingline;
         }
@@ -89,7 +90,8 @@ namespace EffectDisplay.Components
                     yield return Timing.WaitForSeconds(2);
                     continue;
                 }
-                if (player.ActiveEffects.Where(x => !Plugin.Instance.Config.BlackList.Contains(x.GetEffectType())).Count() == 0)
+
+                if (!player.ActiveEffects.Any(x => !Plugin.Instance.Config.BlackList.Contains(x.GetEffectType())))
                 {
                     yield return Timing.WaitForSeconds(2f);
                     continue;
@@ -107,7 +109,7 @@ namespace EffectDisplay.Components
                     }
                     catch (Exception e)
                     {
-                        Log.Debug($"[PlayerEffectShower] Exception {e.Message}");
+                        Log.Debug($"[PlayerEffectShower] Exception {e}");
                     }
                 }
 
@@ -115,7 +117,7 @@ namespace EffectDisplay.Components
                 Log.Debug(data);
 
                 data = $"<size={cfg.NativeHintSettings.FontSize}><align={cfg.NativeHintSettings.Aligment}>" + data + "</size></align>";
-                player?.ShowHint(data, 1f + (float)(player.Ping / 100f)); // display a message taking into account the player's ping for a smooth update
+                player?.ShowHint(data, cfg.UpdateTime + 0.2f);
 
                 Log.Debug($"[PlayerEffectShower] Iteration {player.Nickname}: processed.");
                 yield return Timing.WaitForSeconds(cfg.UpdateTime);
