@@ -6,6 +6,8 @@ using Exiled.API.Features;
 
 using MEC;
 
+using NorthwoodLib.Pools;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +26,7 @@ namespace EffectDisplay.Components
 
         private bool Enabled = true;
         /// <summary>
-        /// Will the display of effects be enabled?
+        /// Determines whether the component is enabled or not. If set to true, the component will start showing the effects of the player. If set to false, the component will stop showing the effects of the player.
         /// </summary>
         public bool IsEnabled
         {
@@ -35,16 +37,8 @@ namespace EffectDisplay.Components
             set
             {
                 Enabled = value;
-                if (value == false) Timing.KillCoroutines(Current);
-                else Current = Timing.RunCoroutine(PlayerEffectShower());
-            }
-        }
-
-        public Configs cfg
-        {
-            get
-            {
-                return Plugin.Instance.Config ?? new Configs();
+                Timing.KillCoroutines(Current);
+                if (value) Current = Timing.RunCoroutine(PlayerEffectShower());
             }
         }
 
@@ -55,24 +49,24 @@ namespace EffectDisplay.Components
             Log.Debug($"[Awake] {player.Nickname} Awake and adding component handling.");
             if (!DataBase.TryGetData(player.UserId, out User user))
             {
-                Current = Timing.RunCoroutine(PlayerEffectShower());
+                IsEnabled = true;
             }
             else
             {
-                if (user.IsAllow) Current = Timing.RunCoroutine(PlayerEffectShower());
+                IsEnabled = user.IsAllow;
             }
         }
 
         private string GenerateString(CustomPlayerEffects.StatusEffectBase effect)
         {
-            string processingline = cfg.EffectLine[effect.Classification];
+            string processingline = Plugin.Instance.Config.EffectLine[effect.Classification];
             if (string.IsNullOrWhiteSpace(processingline)) return string.Empty;
             processingline = processingline
                 .Replace("%time%", (int)effect.Duration == 0 ? "inf" : $"{effect.TimeLeft:F1}")
                 .Replace("%duration%", effect.Duration <= 0.1f ? "inf" : $"{effect.Duration:F0}")
-                .Replace("%effect%", cfg.GetName(effect.GetEffectType()))
+                .Replace("%effect%", Plugin.Instance.Config.GetName(effect.GetEffectType()))
                 .Replace("%intensity%", effect.Intensity.ToString());
-            Log.Debug($"{nameof(PlayerEffectShower)}: Line {processingline} created");
+            Log.Debug($"[GenerateString]: Line {processingline} created");
             return processingline;
         }
 
@@ -97,7 +91,9 @@ namespace EffectDisplay.Components
                     continue;
                 }
 
-                StringBuilder InfoLine = new StringBuilder();
+                StringBuilder InfoLine = StringBuilderPool.Shared.Rent();
+                InfoLine.Append($"<size={Plugin.Instance.Config.NativeHintSettings.FontSize}><align={Plugin.Instance.Config.NativeHintSettings.Aligment}>");
+                
                 foreach (CustomPlayerEffects.StatusEffectBase item in player.ActiveEffects)
                 {
                     if (Plugin.Instance.Config.BlackList.Contains(item.GetEffectType())) continue;
@@ -113,14 +109,11 @@ namespace EffectDisplay.Components
                     }
                 }
 
-                string data = InfoLine.ToString();
-                Log.Debug(data);
-
-                data = $"<size={cfg.NativeHintSettings.FontSize}><align={cfg.NativeHintSettings.Aligment}>" + data + "</size></align>";
-                player?.ShowHint(data, cfg.UpdateTime + 0.2f);
+                InfoLine.Append("</align></size>");
+                player.ShowHint(StringBuilderPool.Shared.ToStringReturn(InfoLine), Plugin.Instance.Config.UpdateTime);
 
                 Log.Debug($"[PlayerEffectShower] Iteration {player.Nickname}: processed.");
-                yield return Timing.WaitForSeconds(cfg.UpdateTime);
+                yield return Timing.WaitForSeconds(Plugin.Instance.Config.UpdateTime);
             }
         }
     }

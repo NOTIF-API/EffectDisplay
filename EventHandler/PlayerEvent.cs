@@ -1,12 +1,6 @@
 ﻿using EffectDisplay.Components;
 using Exiled.API.Features;
-using Exiled.API.Features.Core.UserSettings;
 using Exiled.Events.EventArgs.Player;
-using Exiled.Events.EventArgs.Server;
-
-using JetBrains.Annotations;
-
-using MEC;
 
 namespace EffectDisplay.EventHandler
 {
@@ -15,9 +9,9 @@ namespace EffectDisplay.EventHandler
         public static void OnVerefied(VerifiedEventArgs e)
         {
             if (e.Player == null) return;
-            Log.Debug(e.Player);
+            Log.Debug($"[OnVerefied] Player verified: {e.Player.Nickname}");
             e.Player.GameObject.AddComponent<UserEffectDisplayer>();
-            Log.Debug("[OnVerefied]: Added UserEffectDisplayer components.");
+            Log.Debug($"[OnVerefied] Added UserEffectDisplayer component to {e.Player.Nickname}");
         }
     }
 }
